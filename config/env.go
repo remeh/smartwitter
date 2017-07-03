@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"log"
@@ -23,7 +23,7 @@ type Config struct {
 // environment variables.
 // Could end the process if any of the env variable
 // is unavailable.
-func EnvConfig() Config {
+func Env() Config {
 	return Config{
 		ConsumerKey:       readEnvVar("CONSUMER_KEY"),
 		ConsumerSecret:    readEnvVar("CONSUMER_SECRET"),

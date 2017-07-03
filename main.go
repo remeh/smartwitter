@@ -6,17 +6,12 @@ import (
 	"os"
 
 	"github.com/ChimeraCoder/anaconda"
+	"github.com/remeh/smartwitter/twitter"
 )
 
 func main() {
-	c := EnvConfig()
-
-	anaconda.SetConsumerKey(c.ConsumerKey)
-	anaconda.SetConsumerSecret(c.ConsumerSecret)
-	api := anaconda.NewTwitterApi(c.AccessToken, c.AccessTokenSecret)
-
 	v := url.Values{"track": os.Args[1:]}
-	stream := api.PublicStreamFilter(v)
+	stream := twitter.GetApi().PublicStreamFilter(v)
 
 	for s := range stream.C {
 		t := s.(anaconda.Tweet)
