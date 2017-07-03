@@ -1,4 +1,6 @@
-package tweet
+package twitter
+
+import "time"
 
 type Tweets []Tweet
 

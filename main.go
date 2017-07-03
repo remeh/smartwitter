@@ -1,20 +1,24 @@
 package main
 
 import (
+	"context"
 	"log"
-	"net/url"
 	"os"
+	"time"
 
-	"github.com/ChimeraCoder/anaconda"
+	"github.com/remeh/smartwitter/follow"
 	"github.com/remeh/smartwitter/twitter"
 )
 
 func main() {
-	v := url.Values{"track": os.Args[1:]}
-	stream := twitter.GetApi().PublicStreamFilter(v)
-
-	for s := range stream.C {
-		t := s.(anaconda.Tweet)
-		log.Println(t.User.Name, ": ", t.Text)
+	u, err := twitter.GetApi().GetUsersShow(os.Args[1], nil)
+	if err != nil {
+		log.Fatalln("err:", err)
 	}
+	id := u.Id
+	println(id)
+
+	ctx, cf := context.WithTimeout(context.Background(), time.Minute*600)
+	defer cf()
+	follow.Follow(ctx)
 }
