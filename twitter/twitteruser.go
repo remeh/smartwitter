@@ -11,6 +11,8 @@ var (
 	twitterUserIdSpace = uuid.UUID("4ab3e860-8381-4c83-acce-dbb79df2fbc5")
 )
 
+type TwitterUsers []TwitterUser
+
 type TwitterUser struct {
 	// Please use Uid() to gets the UUID of this tweet.
 	uid uuid.UUID
