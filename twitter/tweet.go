@@ -53,7 +53,7 @@ func (t TweetUser) Uid() uuid.UUID {
 
 func (t *Tweet) Upsert(db *sql.DB) error {
 
-	if user, err := t.User(); err != nil {
+	if user, err := t.User(db); err != nil {
 		return err
 	} else {
 		// upsert the user
@@ -78,9 +78,8 @@ func (t *Tweet) Upsert(db *sql.DB) error {
 	return nil
 }
 
-func (t *Tweet) User() (TweetUser, error) {
-	// TODO(remy): implement this.
-	return TweetUser{}, fmt.Errorf("todo")
+func (t *Tweet) User(db *sql.DB) (*TweetUser, error) {
+	return FindTweetUser(db, t.UserUid)
 }
 
 func (tu *TweetUser) Upsert(db *sql.DB) error {
@@ -101,4 +100,23 @@ func (tu *TweetUser) Upsert(db *sql.DB) error {
 	}
 
 	return nil
+}
+
+// FindTweetUser finds th
+func FindTweetUser(db *sql.DB, id uuid.UUID) (*TweetUser, error) {
+	if db == nil || id == nil {
+		return nil, fmt.Errorf("nil db or nil id")
+	}
+
+	rv := &TweetUser{uid: id}
+
+	if err := db.QueryRow(`
+		SELECT "creation_time", "twitter_id", "twitter_creation_time", "description", "screen_name", "name", "timezone" FROM "tweet_user"
+		WHERE "uid" = $1
+		LIMIT 1
+	`).Scan(&rv.CreationTime, &rv.TwitterId, &rv.TwitterCreationTime, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone); err != nil {
+		return nil, err
+	}
+
+	return rv, nil
 }
