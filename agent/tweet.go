@@ -30,6 +30,8 @@ func GetTweets(ctx context.Context) {
 	}
 }
 
+// ----------------------
+
 func getTweets(ctx context.Context) error {
 	sr, err := twitter.GetApi().GetSearch("golang", nil)
 	if err != nil {
@@ -48,4 +50,8 @@ func getTweets(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func storeTweet(t *Tweet) error {
+
 }
