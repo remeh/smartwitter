@@ -37,7 +37,7 @@ func (d *tweetDAO) InitStmt() error {
 	return err
 }
 
-func (d *tweetDAO) UpsertTweet(t *Tweet) error {
+func (d *tweetDAO) Upsert(t *Tweet) error {
 	if _, err := d.DB.Exec(`
 		INSERT INTO "tweet" ("uid", "creation_time", "twitter_id", "twitter_creation_time", "text", "user_uid")
 		VALUES ($1, $2, $3, $4, $5, $6)

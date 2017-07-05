@@ -27,5 +27,15 @@ type Tweet struct {
 }
 
 func (t Tweet) Uid() uuid.UUID {
-	return uuid.NewSHA1(tweetIdSpace, []byte(fmt.Sprintf("%d", t.TwitterId)))
+	if t.uid == nil && t.TwitterId >= 0 {
+		t.uid = uuid.NewSHA1(tweetIdSpace, []byte(fmt.Sprintf("%d", t.TwitterId)))
+	}
+	return t.uid
+}
+
+func NewTweet(twitterId, twitterUserId int64) *Tweet {
+	return &Tweet{
+		TwitterId: twitterId,
+		UserUid:   NewTwitterUser(twitterUserId).Uid(),
+	}
 }

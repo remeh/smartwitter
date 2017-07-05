@@ -2,9 +2,9 @@ package agent
 
 import (
 	"context"
-	"log"
 	"time"
 
+	"github.com/remeh/smartwitter/log"
 	"github.com/remeh/smartwitter/twitter"
 )
 
@@ -18,13 +18,13 @@ func GetTweets(ctx context.Context) {
 
 		select {
 		case <-after:
-			log.Println("debug: GetTweets is starting.")
-			if err := run(ctx); err != nil {
-				log.Println("error: while running GetTweets:", err)
+			log.Debug("GetTweets is starting.")
+			if err := getTweets(ctx); err != nil {
+				log.Error("while running GetTweets:", err)
 			}
-			log.Println("debug: GetTweets is ending.")
+			log.Debug("GetTweets is ending.")
 		case <-ctx.Done():
-			log.Println("debug: GetTweets canceled.")
+			log.Debug("GetTweets canceled.")
 			return
 		}
 	}
@@ -39,8 +39,41 @@ func getTweets(ctx context.Context) error {
 	}
 
 	for _, s := range sr.Statuses {
+		now := time.Now()
 
-		// store this tweet
+		// create this tweet and twitter user
+		// ----------------------
+
+		// tweet
+
+		t := twitter.NewTweet(s.Id, s.User.Id)
+		if t.TwitterCreationTime, err = s.CreatedAtTime(); err != nil {
+			log.Warning("getTweets: getting tweet creation time:", err)
+		}
+		t.CreationTime = now
+		t.Text = s.Text
+
+		// twitter user
+
+		tu := twitter.NewTwitterUser(s.User.Id)
+		tu.CreationTime = now
+		tu.Description = s.User.Description
+		tu.Name = s.User.Name
+		tu.ScreenName = s.User.ScreenName
+		tu.TimeZone = s.User.TimeZone
+		tu.UtcOffset = s.User.UtcOffset
+
+		// upsert
+		// ----------------------
+
+		if err := twitter.TwitterUserDAO().Upsert(tu); err != nil {
+			return log.Err("getTweets: upsert TwitterUser:", err)
+		}
+
+		if err := twitter.TweetDAO().Upsert(t); err != nil {
+			return log.Err("getTweets: upsert Tweet:", err)
+			return err
+		}
 
 		select {
 		case <-ctx.Done():
@@ -50,8 +83,4 @@ func getTweets(ctx context.Context) error {
 	}
 
 	return nil
-}
-
-func storeTweet(t *Tweet) error {
-
 }

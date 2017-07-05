@@ -1,8 +1,6 @@
-// Memoiz backend
-//
 // DB storage.
 //
-// Rémy Mathieu © 2016
+// Rémy Mathieu © 2017
 
 package storage
 

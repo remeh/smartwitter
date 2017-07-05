@@ -19,15 +19,23 @@ type TwitterUser struct {
 	// Time of the entry in the database.
 	CreationTime time.Time
 	// Id of the user on Twitter.
-	TwitterId int64
-	// Twitter profile creation time.
-	TwitterCreationTime time.Time
-	Description         string
-	ScreenName          string
-	Name                string
-	TimeZone            string
+	TwitterId   int64
+	Description string
+	ScreenName  string
+	Name        string
+	TimeZone    string
+	UtcOffset   int
 }
 
 func (t TwitterUser) Uid() uuid.UUID {
-	return uuid.NewSHA1(twitterUserIdSpace, []byte(fmt.Sprintf("%d", t.TwitterId)))
+	if t.uid == nil && t.TwitterId >= 0 {
+		t.uid = uuid.NewSHA1(twitterUserIdSpace, []byte(fmt.Sprintf("%d", t.TwitterId)))
+	}
+	return t.uid
+}
+
+func NewTwitterUser(twitterId int64) *TwitterUser {
+	return &TwitterUser{
+		TwitterId: twitterId,
+	}
 }

@@ -3,7 +3,7 @@ package storage
 import (
 	"fmt"
 
-	"remy.io/memoiz/log"
+	"github.com/remeh/smartwitter/log"
 )
 
 // InClause generates the IN clause such as,
