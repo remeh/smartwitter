@@ -19,7 +19,7 @@ func main() {
 
 	log.Info("Started.")
 
-	ctx, cf := context.WithTimeout(context.Background(), time.Minute*5)
+	ctx, cf := context.WithTimeout(context.Background(), time.Second*15)
 	defer cf()
 	agent.GetTweets(ctx)
 }

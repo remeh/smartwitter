@@ -32,6 +32,7 @@ CREATE TABLE "tweet" (
 CREATE UNIQUE INDEX ON "tweet" ("uid");
 CREATE INDEX ON "tweet" ("twitter_user_uid");
 CREATE INDEX ON "tweet" ("twitter_id");
+ALTER TABLE "tweet" ADD CONSTRAINT tweet_twitter_user FOREIGN KEY ("twitter_user_uid") REFERENCES "twitter_user" ("uid") MATCH FULL;
 
 -- Twitter user
 
