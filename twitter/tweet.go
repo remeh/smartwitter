@@ -15,22 +15,22 @@ type Tweets []Tweet
 
 type Tweet struct {
 	// Please use Uid() to gets the UUID of this tweet.
-	uid uuid.UUID
+	uid uuid.UUID `json:"-"`
 	// Time of the entry in the database.
-	CreationTime time.Time
-	LastUpdate   time.Time
+	CreationTime time.Time `json:"creation_time"`
+	LastUpdate   time.Time `json:"last_update"`
 	// Id of the tweet on Twitter.
-	TwitterId int64
+	TwitterId int64 `json:"-"`
 	// Twitter profile creation time.
-	TwitterCreationTime time.Time
-	RetweetCount        int
-	FavoriteCount       int
-	Text                string
-	Lang                string
-	Link                string
-	UserUid             uuid.UUID
+	TwitterCreationTime time.Time `json:"twitter_creation_time"`
+	RetweetCount        int       `json:"retweet_count"`
+	FavoriteCount       int       `json:"favorite_count"`
+	Text                string    `json:"text"`
+	Lang                string    `json:"-"`
+	Link                string    `json:"link"`
+	UserUid             uuid.UUID `json:"-"`
 	// keywords having found this tweet
-	Keywords []string
+	Keywords []string `json:"-"`
 }
 
 func (t Tweet) Uid() uuid.UUID {

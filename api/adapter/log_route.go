@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"remy.io/memoiz/config"
-	"remy.io/memoiz/log"
+	"github.com/remeh/smartwitter/config"
+	"github.com/remeh/smartwitter/log"
 )
 
 type LogHandler struct {
@@ -17,7 +17,7 @@ type LogHandler struct {
 }
 
 func (a LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", config.Config.AppUrl)
+	w.Header().Set("Access-Control-Allow-Origin", config.Env().AppUrl)
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	// propagate to the next handler

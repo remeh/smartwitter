@@ -3,7 +3,7 @@ package example
 import (
 	"net/http"
 
-	"remy.io/memoiz/api"
+	"github.com/remeh/smartwitter/api"
 )
 
 type Example struct {
