@@ -44,6 +44,7 @@ CREATE TABLE "twitter_user" (
     "name" text NOT NULL,
     "timezone" text NOT NULL,
     "utc_offset" int NOT NULL,
+    "followers_count" int default 0,
 
     -- time
     "creation_time" timestamp with time zone NOT NULL DEFAULT now(),

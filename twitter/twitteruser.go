@@ -20,12 +20,13 @@ type TwitterUser struct {
 	CreationTime time.Time
 	LastUpdate   time.Time
 	// Id of the user on Twitter.
-	TwitterId   int64
-	Description string
-	ScreenName  string
-	Name        string
-	TimeZone    string
-	UtcOffset   int
+	TwitterId      int64
+	Description    string
+	ScreenName     string
+	Name           string
+	TimeZone       string
+	UtcOffset      int
+	FollowersCount int
 }
 
 func (t TwitterUser) Uid() uuid.UUID {

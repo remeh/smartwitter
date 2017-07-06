@@ -79,6 +79,7 @@ func getTweets(ctx context.Context) error {
 		tu.ScreenName = s.User.ScreenName
 		tu.TimeZone = s.User.TimeZone
 		tu.UtcOffset = s.User.UtcOffset
+		tu.FollowersCount = s.User.FollowersCount
 
 		// upsert
 		// ----------------------
