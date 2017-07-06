@@ -20,6 +20,10 @@ CREATE TABLE "tweet" (
     "retweet_count" int default 0,
     "favorite_count" int default 0,
 
+    "lang" text default 'en',
+    "link" text default 'https://twitter.com',
+    "keywords" text[] default array[]::text[],
+
     -- time
     "creation_time" timestamp with time zone NOT NULL DEFAULT now(),
     "last_update" timestamp with time zone NOT NULL DEFAULT now()

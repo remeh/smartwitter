@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Second * 30)
+		after := time.After(time.Second * 3)
 
 		// ----------------------
 
@@ -34,7 +35,12 @@ func GetTweets(ctx context.Context) {
 // ----------------------
 
 func getTweets(ctx context.Context) error {
-	v := url.Values{"tweet_mode": []string{"extended"}}
+	v := url.Values{
+		"tweet_mode":  []string{"extended"},
+		"lang":        []string{"en"},
+		"count":       []string{"50"},
+		"result_type": []string{"popular"},
+	}
 	sr, err := twitter.GetApi().GetSearch("golang", v)
 	if err != nil {
 		return err
@@ -48,6 +54,8 @@ func getTweets(ctx context.Context) error {
 
 		// tweet
 
+		// TODO(remy): export this method into package twiter
+
 		t := twitter.NewTweet(s.Id, s.User.Id)
 		if t.TwitterCreationTime, err = s.CreatedAtTime(); err != nil {
 			log.Warning("getTweets: getting tweet creation time:", err)
@@ -55,6 +63,11 @@ func getTweets(ctx context.Context) error {
 		t.CreationTime = now
 		t.LastUpdate = now
 		t.Text = s.FullText
+		t.RetweetCount = s.RetweetCount
+		t.FavoriteCount = s.FavoriteCount
+		t.Lang = s.Lang
+		t.Keywords = []string{"golang"}
+		t.Link = fmt.Sprintf("https://twitter.com/%s/status/%d", s.User.ScreenName, s.Id)
 
 		// twitter user
 
@@ -79,7 +92,6 @@ func getTweets(ctx context.Context) error {
 			return err
 		}
 
-		println(s.Truncated)
 		log.Debug("stored tweet:", tu.Name, t.Text)
 
 		select {

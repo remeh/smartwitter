@@ -26,7 +26,11 @@ type Tweet struct {
 	RetweetCount        int
 	FavoriteCount       int
 	Text                string
+	Lang                string
+	Link                string
 	UserUid             uuid.UUID
+	// keywords having found this tweet
+	Keywords []string
 }
 
 func (t Tweet) Uid() uuid.UUID {
