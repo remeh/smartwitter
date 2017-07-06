@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"net/url"
 	"time"
 
 	"github.com/remeh/smartwitter/log"
@@ -12,7 +13,7 @@ import (
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Second * 3)
+		after := time.After(time.Second * 30)
 
 		// ----------------------
 
@@ -33,7 +34,8 @@ func GetTweets(ctx context.Context) {
 // ----------------------
 
 func getTweets(ctx context.Context) error {
-	sr, err := twitter.GetApi().GetSearch("golang", nil)
+	v := url.Values{"tweet_mode": []string{"extended"}}
+	sr, err := twitter.GetApi().GetSearch("golang", v)
 	if err != nil {
 		return err
 	}
@@ -51,12 +53,14 @@ func getTweets(ctx context.Context) error {
 			log.Warning("getTweets: getting tweet creation time:", err)
 		}
 		t.CreationTime = now
-		t.Text = s.Text
+		t.LastUpdate = now
+		t.Text = s.FullText
 
 		// twitter user
 
 		tu := twitter.NewTwitterUser(s.User.Id)
 		tu.CreationTime = now
+		tu.LastUpdate = now
 		tu.Description = s.User.Description
 		tu.Name = s.User.Name
 		tu.ScreenName = s.User.ScreenName
@@ -74,6 +78,9 @@ func getTweets(ctx context.Context) error {
 			return log.Err("getTweets: upsert Tweet:", err)
 			return err
 		}
+
+		println(s.Truncated)
+		log.Debug("stored tweet:", tu.Name, t.Text)
 
 		select {
 		case <-ctx.Done():

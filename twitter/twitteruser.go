@@ -18,6 +18,7 @@ type TwitterUser struct {
 	uid uuid.UUID
 	// Time of the entry in the database.
 	CreationTime time.Time
+	LastUpdate   time.Time
 	// Id of the user on Twitter.
 	TwitterId   int64
 	Description string

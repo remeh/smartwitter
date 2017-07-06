@@ -18,10 +18,13 @@ type Tweet struct {
 	uid uuid.UUID
 	// Time of the entry in the database.
 	CreationTime time.Time
+	LastUpdate   time.Time
 	// Id of the tweet on Twitter.
 	TwitterId int64
 	// Twitter profile creation time.
 	TwitterCreationTime time.Time
+	RetweetCount        int
+	FavoriteCount       int
 	Text                string
 	UserUid             uuid.UUID
 }

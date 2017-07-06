@@ -1,15 +1,9 @@
 package config
 
 import (
-	"log"
 	"os"
-)
 
-const (
-	ConsumerKey       string = "CONSUMER_KEY"
-	ConsumerSecret    string = "CONSUMER_SECRET"
-	AccessToken       string = "ACCESS_TOKEN"
-	AccessTokenSecret string = "ACCESS_TOKEN_SECRET"
+	"github.com/remeh/smartwitter/log"
 )
 
 type Config struct {
@@ -17,6 +11,8 @@ type Config struct {
 	ConsumerSecret    string
 	AccessToken       string
 	AccessTokenSecret string
+
+	Conn string
 }
 
 // EnvConfig returns the config set in
@@ -25,17 +21,24 @@ type Config struct {
 // is unavailable.
 func Env() Config {
 	return Config{
-		ConsumerKey:       readEnvVar("CONSUMER_KEY"),
-		ConsumerSecret:    readEnvVar("CONSUMER_SECRET"),
-		AccessToken:       readEnvVar("ACCESS_TOKEN"),
-		AccessTokenSecret: readEnvVar("ACCESS_TOKEN_SECRET"),
+		ConsumerKey:       readEnvVar("CONSUMER_KEY", true, ""),
+		ConsumerSecret:    readEnvVar("CONSUMER_SECRET", true, ""),
+		AccessToken:       readEnvVar("ACCESS_TOKEN", true, ""),
+		AccessTokenSecret: readEnvVar("ACCESS_TOKEN_SECRET", true, ""),
+		Conn:              readEnvVar("CONN", false, "host=/var/run/postgresql sslmode=disable user=smartwitter dbname=smartwitter password=smartwitter"),
 	}
 }
 
-func readEnvVar(v string) string {
+func readEnvVar(v string, mandatory bool, def string) string {
 	var rv string
 	if rv = os.Getenv(v); len(rv) == 0 {
-		log.Fatalln("Can't find the environment variable:", v)
+		if mandatory {
+			log.Error("Can't find the environment variable:", v)
+			os.Exit(1)
+		} else {
+			log.Warning("Using default value for:", v)
+			rv = def
+		}
 	}
 	return rv
 }

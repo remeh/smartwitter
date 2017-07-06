@@ -2,23 +2,17 @@ package main
 
 import (
 	"context"
-	"log"
-	"os"
 	"time"
 
-	"github.com/remeh/smartwitter/follow"
-	"github.com/remeh/smartwitter/twitter"
+	"github.com/remeh/smartwitter/agent"
+	"github.com/remeh/smartwitter/config"
+	"github.com/remeh/smartwitter/storage"
 )
 
 func main() {
-	u, err := twitter.GetApi().GetUsersShow(os.Args[1], nil)
-	if err != nil {
-		log.Fatalln("err:", err)
-	}
-	id := u.Id
-	println(id)
+	storage.Init(config.Env().Conn)
 
-	ctx, cf := context.WithTimeout(context.Background(), time.Minute*600)
+	ctx, cf := context.WithTimeout(context.Background(), time.Minute*5)
 	defer cf()
-	follow.Follow(ctx)
+	agent.GetTweets(ctx)
 }

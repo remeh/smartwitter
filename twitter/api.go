@@ -1,7 +1,8 @@
 package twitter
 
 import (
-	"github.com/ChimeraCoder/anaconda"
+	"github.com/remeh/anaconda"
+
 	"github.com/remeh/smartwitter/config"
 )
 
