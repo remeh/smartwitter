@@ -73,7 +73,7 @@ func (d *twitterUserDAO) Find(id uuid.UUID) (*TwitterUser, error) {
 		SELECT "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "utc_offset", "followers_count" FROM "twitter_user"
 		WHERE "uid" = $1
 		LIMIT 1
-	`).Scan(&rv.CreationTime, &rv.LastUpdate, &rv.TwitterId, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone, &rv.UtcOffset, &rv.FollowersCount); err != nil {
+	`, id).Scan(&rv.CreationTime, &rv.LastUpdate, &rv.TwitterId, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone, &rv.UtcOffset, &rv.FollowersCount); err != nil {
 		return nil, err
 	}
 	return rv, nil

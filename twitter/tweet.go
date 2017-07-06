@@ -28,7 +28,7 @@ type Tweet struct {
 	Text                string    `json:"text"`
 	Lang                string    `json:"-"`
 	Link                string    `json:"link"`
-	UserUid             uuid.UUID `json:"-"`
+	TwitterUserUid      uuid.UUID `json:"-"`
 	// keywords having found this tweet
 	Keywords []string `json:"-"`
 }
@@ -40,9 +40,20 @@ func (t Tweet) Uid() uuid.UUID {
 	return t.uid
 }
 
+func (t Tweet) User() (*TwitterUser, error) {
+	tu, err := TwitterUserDAO().Find(t.TwitterUserUid)
+	if err != nil {
+		return nil, err
+	}
+	if tu == nil {
+		return nil, fmt.Errorf("can't find user: %v", t.TwitterUserUid)
+	}
+	return tu, nil
+}
+
 func NewTweet(twitterId, twitterUserId int64) *Tweet {
 	return &Tweet{
-		TwitterId: twitterId,
-		UserUid:   NewTwitterUser(twitterUserId).Uid(),
+		TwitterId:      twitterId,
+		TwitterUserUid: NewTwitterUser(twitterUserId).Uid(),
 	}
 }

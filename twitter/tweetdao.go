@@ -55,7 +55,7 @@ func (d *tweetDAO) Upsert(t *Tweet) error {
 			"lang" = $10,
 			"keywords" = array(select distinct unnest("tweet"."keywords" || $11)),
 			"link" = $12
-	`, t.Uid(), t.CreationTime, t.LastUpdate, t.TwitterId, t.TwitterCreationTime, t.Text, t.UserUid, t.RetweetCount, t.FavoriteCount, t.Lang, pq.Array(t.Keywords), t.Link); err != nil {
+	`, t.Uid(), t.CreationTime, t.LastUpdate, t.TwitterId, t.TwitterCreationTime, t.Text, t.TwitterUserUid, t.RetweetCount, t.FavoriteCount, t.Lang, pq.Array(t.Keywords), t.Link); err != nil {
 		return err
 	}
 	return nil
