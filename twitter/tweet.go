@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/remeh/anaconda"
+	"github.com/remeh/smartwitter/log"
 	"github.com/remeh/uuid"
 )
 
@@ -56,4 +58,21 @@ func NewTweet(twitterId, twitterUserId int64) *Tweet {
 		TwitterId:      twitterId,
 		TwitterUserUid: NewTwitterUser(twitterUserId).Uid(),
 	}
+}
+
+func TweetFromTweet(t anaconda.Tweet, now time.Time, keywords []string) *Tweet {
+	var err error
+	rv := NewTweet(t.Id, t.User.Id)
+	if rv.TwitterCreationTime, err = t.CreatedAtTime(); err != nil {
+		log.Warning("getTweets: getting tweet creation time:", err)
+	}
+	rv.CreationTime = now
+	rv.LastUpdate = now
+	rv.Text = t.FullText
+	rv.RetweetCount = t.RetweetCount
+	rv.FavoriteCount = t.FavoriteCount
+	rv.Lang = t.Lang
+	rv.Keywords = keywords
+	rv.Link = fmt.Sprintf("https://twitter.com/%s/status/%d", t.User.ScreenName, t.Id)
+	return rv
 }

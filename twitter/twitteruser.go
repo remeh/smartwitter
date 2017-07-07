@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/remeh/anaconda"
 	"github.com/remeh/uuid"
 )
 
@@ -40,4 +41,17 @@ func NewTwitterUser(twitterId int64) *TwitterUser {
 	return &TwitterUser{
 		TwitterId: twitterId,
 	}
+}
+
+func TwitterUserFromTweet(s anaconda.Tweet, now time.Time) *TwitterUser {
+	tu := NewTwitterUser(s.User.Id)
+	tu.CreationTime = now
+	tu.LastUpdate = now
+	tu.Description = s.User.Description
+	tu.Name = s.User.Name
+	tu.ScreenName = s.User.ScreenName
+	tu.TimeZone = s.User.TimeZone
+	tu.UtcOffset = s.User.UtcOffset
+	tu.FollowersCount = s.User.FollowersCount
+	return tu
 }

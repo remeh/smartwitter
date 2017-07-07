@@ -2,7 +2,6 @@ package agent
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"time"
 
@@ -54,32 +53,11 @@ func getTweets(ctx context.Context) error {
 
 		// tweet
 
-		// TODO(remy): export this method into package twiter
-
-		t := twitter.NewTweet(s.Id, s.User.Id)
-		if t.TwitterCreationTime, err = s.CreatedAtTime(); err != nil {
-			log.Warning("getTweets: getting tweet creation time:", err)
-		}
-		t.CreationTime = now
-		t.LastUpdate = now
-		t.Text = s.FullText
-		t.RetweetCount = s.RetweetCount
-		t.FavoriteCount = s.FavoriteCount
-		t.Lang = s.Lang
-		t.Keywords = []string{"golang"}
-		t.Link = fmt.Sprintf("https://twitter.com/%s/status/%d", s.User.ScreenName, s.Id)
+		t := twitter.TweetFromTweet(s, now, []string{"golang"})
 
 		// twitter user
 
-		tu := twitter.NewTwitterUser(s.User.Id)
-		tu.CreationTime = now
-		tu.LastUpdate = now
-		tu.Description = s.User.Description
-		tu.Name = s.User.Name
-		tu.ScreenName = s.User.ScreenName
-		tu.TimeZone = s.User.TimeZone
-		tu.UtcOffset = s.User.UtcOffset
-		tu.FollowersCount = s.User.FollowersCount
+		tu := twitter.TwitterUserFromTweet(s, now)
 
 		// upsert
 		// ----------------------
