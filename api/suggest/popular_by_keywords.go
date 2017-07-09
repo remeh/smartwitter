@@ -13,6 +13,7 @@ type ByKeywords struct {
 type byKeywords []byKeywordsInfo
 
 type byKeywordsInfo struct {
+	Uid                  string `json:"uid"`
 	Link                 string `json:"link"`
 	ScreenName           string `json:"screen_name"`
 	Text                 string `json:"text"`
@@ -26,7 +27,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// ----------------------
 
 	r.ParseForm()
-	keywords := r.Form["k"]
+	keywords := api.Escape(r.Form["k"])
 
 	// TODO(remy): trim all keywords
 
@@ -53,6 +54,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data = append(data, byKeywordsInfo{
+			Uid:                  t.Uid().String(),
 			Link:                 t.Link,
 			ScreenName:           tu.ScreenName,
 			Text:                 t.Text,

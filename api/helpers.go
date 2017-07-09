@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strings"
 
 	"github.com/remeh/smartwitter/log"
 )
@@ -29,6 +30,17 @@ func ReadJsonBody(r *http.Request, object interface{}) error {
 	}
 
 	return json.Unmarshal(data, object)
+}
+
+func Escape(strs []string) []string {
+	for i := range strs {
+		strs[i] = EscapeOne(strs[i])
+	}
+	return strs
+}
+
+func EscapeOne(str string) string {
+	return strings.TrimSpace(str)
 }
 
 // Response

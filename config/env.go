@@ -38,7 +38,7 @@ func Env() Config {
 		AccessTokenSecret: readEnvVar("ACCESS_TOKEN_SECRET", true, ""),
 		Conn:              readEnvVar("CONN", false, "host=/var/run/postgresql sslmode=disable user=smartwitter dbname=smartwitter password=smartwitter"),
 		AppUrl:            readEnvVar("APP_URL", false, "http://localhost"),
-		ListenAddr:        readEnvVar("ADDR", false, ":8080"),
+		ListenAddr:        readEnvVar("ADDR", false, ":9999"),
 		PublicDir:         readEnvVar("PUBLIC", false, "public/"),
 		loaded:            true,
 	}
