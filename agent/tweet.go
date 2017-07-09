@@ -3,6 +3,7 @@ package agent
 import (
 	"context"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/remeh/smartwitter/log"
@@ -45,8 +46,14 @@ func getTweets(ctx context.Context) error {
 		return err
 	}
 
+	now := time.Now()
 	for _, s := range sr.Statuses {
-		now := time.Now()
+		// atm, we want to ignore the retweets to
+		// not fill up the database with retweets.
+		if strings.Contains(s.FullText, "RT @") {
+			log.Debug("ignoring tweet:", s.User.Name, s.FullText)
+			continue
+		}
 
 		// create this tweet and twitter user
 		// ----------------------
