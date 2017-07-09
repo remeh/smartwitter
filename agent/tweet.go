@@ -38,7 +38,7 @@ func getTweets(ctx context.Context) error {
 	v := url.Values{
 		"tweet_mode":  []string{"extended"},
 		"lang":        []string{"en"},
-		"count":       []string{"50"},
+		"count":       []string{"30"},
 		"result_type": []string{"recent"},
 	}
 	sr, err := twitter.GetApi().GetSearch("golang", v)
