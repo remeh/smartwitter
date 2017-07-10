@@ -45,7 +45,7 @@ class TweetCard extends Component {
 
   retweet = (event, button, data) => {
     this.setState({
-      liking: true,
+      retweeting: true,
     });
     let params = {tid: this.props.tweet_id, au: true};
     XHR.postJson(
