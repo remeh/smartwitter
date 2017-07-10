@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/remeh/smartwitter/agent"
+	"github.com/remeh/smartwitter/api/action"
 	"github.com/remeh/smartwitter/api/adapter"
 	"github.com/remeh/smartwitter/api/example"
 	"github.com/remeh/smartwitter/api/suggest"
@@ -54,4 +55,6 @@ func declareApiRoutes(s *Server) {
 	// ----------------------
 
 	s.AddApi("/1.0/suggest", log(suggest.ByKeywords{}), "GET")
+
+	s.AddApi("/1.0/like", log(action.Like{}), "POST")
 }

@@ -55,6 +55,18 @@ CREATE UNIQUE INDEX ON "twitter_user" ("uid");
 CREATE INDEX ON "twitter_user" ("twitter_id");
 ALTER TABLE "tweet" ADD CONSTRAINT tweet_twitter_user FOREIGN KEY ("twitter_user_uid") REFERENCES "twitter_user" ("uid") MATCH FULL;
 
+-- Twitter Future Action
+
+CREATE TABLE "twitter_future_action" (
+    "uid" text NOT NULL default '',
+
+    "parameters" json default '[]',
+
+    -- time
+    "creation_time" timestamp with time zone NOT NULL DEFAULT now(),
+    "execution_time" timestamp with time zone NOT NULL DEFAULT now() + interval '12 hour'
+);
+
 ----------------------
 -- DB Schema
 ----------------------
