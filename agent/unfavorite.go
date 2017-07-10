@@ -88,6 +88,8 @@ func unfavorite(ctx context.Context) error {
 			return ctx.Err()
 		default:
 		}
+
+		time.Sleep(1 * time.Second)
 	}
 
 	return nil
