@@ -27,10 +27,6 @@ class SuggestTweets extends Component {
       XHR.domain + '/api/1.0/suggest',
       params,
     ).then((json) => {
-      for (let i = 0; i < json.length; i++) {
-        json[i].twitter_id = '' + json[i].twitter_id;
-        console.log(json[i]);
-      }
       this.setState({tweets: json});
     }).catch((response) => {
     });
@@ -46,6 +42,7 @@ class SuggestTweets extends Component {
           (tweet) => <div key={tweet.uid}>
             <TweetCard
               screen_name={tweet.screen_name}
+              tweet_id={tweet.tweet_id}
               text={tweet.text}
               link={tweet.link}
             />
