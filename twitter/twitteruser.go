@@ -2,6 +2,7 @@ package twitter
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/remeh/anaconda"
@@ -21,7 +22,7 @@ type TwitterUser struct {
 	CreationTime time.Time
 	LastUpdate   time.Time
 	// Id of the user on Twitter.
-	TwitterId      int64
+	TwitterId      string
 	Description    string
 	ScreenName     string
 	Name           string
@@ -31,20 +32,20 @@ type TwitterUser struct {
 }
 
 func (t TwitterUser) Uid() uuid.UUID {
-	if t.uid == nil && t.TwitterId >= 0 {
-		t.uid = uuid.NewSHA1(twitterUserIdSpace, []byte(fmt.Sprintf("%d", t.TwitterId)))
+	if t.uid == nil && t.TwitterId != "" {
+		t.uid = uuid.NewSHA1(twitterUserIdSpace, []byte(fmt.Sprintf("%s", t.TwitterId)))
 	}
 	return t.uid
 }
 
-func NewTwitterUser(twitterId int64) *TwitterUser {
+func NewTwitterUser(twitterId string) *TwitterUser {
 	return &TwitterUser{
 		TwitterId: twitterId,
 	}
 }
 
 func TwitterUserFromTweet(s anaconda.Tweet, now time.Time) *TwitterUser {
-	tu := NewTwitterUser(s.User.Id)
+	tu := NewTwitterUser(strconv.FormatInt(s.User.Id, 10))
 	tu.CreationTime = now
 	tu.LastUpdate = now
 	tu.Description = s.User.Description

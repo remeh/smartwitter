@@ -14,6 +14,7 @@ type byKeywords []byKeywordsInfo
 
 type byKeywordsInfo struct {
 	Uid                  string `json:"uid"`
+	TweetId              string `json:"tweet_id"`
 	Link                 string `json:"link"`
 	ScreenName           string `json:"screen_name"`
 	Text                 string `json:"text"`
@@ -55,6 +56,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		data = append(data, byKeywordsInfo{
 			Uid:                  t.Uid().String(),
+			TweetId:              t.TwitterId,
 			Link:                 t.Link,
 			ScreenName:           tu.ScreenName,
 			Text:                 t.Text,

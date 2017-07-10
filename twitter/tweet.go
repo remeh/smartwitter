@@ -2,6 +2,7 @@ package twitter
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/remeh/anaconda"
@@ -22,7 +23,7 @@ type Tweet struct {
 	CreationTime time.Time `json:"creation_time"`
 	LastUpdate   time.Time `json:"last_update"`
 	// Id of the tweet on Twitter.
-	TwitterId int64 `json:"-"`
+	TwitterId string `json:"-"`
 	// Twitter profile creation time.
 	TwitterCreationTime time.Time `json:"twitter_creation_time"`
 	RetweetCount        int       `json:"retweet_count"`
@@ -36,8 +37,8 @@ type Tweet struct {
 }
 
 func (t Tweet) Uid() uuid.UUID {
-	if t.uid == nil && t.TwitterId >= 0 {
-		t.uid = uuid.NewSHA1(tweetIdSpace, []byte(fmt.Sprintf("%d", t.TwitterId)))
+	if t.uid == nil && t.TwitterId != "" {
+		t.uid = uuid.NewSHA1(tweetIdSpace, []byte(fmt.Sprintf("%s", t.TwitterId)))
 	}
 	return t.uid
 }
@@ -53,7 +54,7 @@ func (t Tweet) User() (*TwitterUser, error) {
 	return tu, nil
 }
 
-func NewTweet(twitterId, twitterUserId int64) *Tweet {
+func NewTweet(twitterId, twitterUserId string) *Tweet {
 	return &Tweet{
 		TwitterId:      twitterId,
 		TwitterUserUid: NewTwitterUser(twitterUserId).Uid(),
@@ -62,7 +63,8 @@ func NewTweet(twitterId, twitterUserId int64) *Tweet {
 
 func TweetFromTweet(t anaconda.Tweet, now time.Time, keywords []string) *Tweet {
 	var err error
-	rv := NewTweet(t.Id, t.User.Id)
+	tid := strconv.FormatInt(t.Id, 10)
+	rv := NewTweet(tid, strconv.FormatInt(t.User.Id, 10))
 	if rv.TwitterCreationTime, err = t.CreatedAtTime(); err != nil {
 		log.Warning("getTweets: getting tweet creation time:", err)
 	}
@@ -73,6 +75,6 @@ func TweetFromTweet(t anaconda.Tweet, now time.Time, keywords []string) *Tweet {
 	rv.FavoriteCount = t.FavoriteCount
 	rv.Lang = t.Lang
 	rv.Keywords = keywords
-	rv.Link = fmt.Sprintf("https://twitter.com/%s/status/%d", t.User.ScreenName, t.Id)
+	rv.Link = fmt.Sprintf("https://twitter.com/%s/status/%s", t.User.ScreenName, tid)
 	return rv
 }

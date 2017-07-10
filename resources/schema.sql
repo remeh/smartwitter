@@ -14,7 +14,7 @@ CREATE TABLE "tweet" (
     "text" text NOT NULL default '',
 
     "twitter_user_uid" text NOT NULL,
-    "twitter_id" bigint default 0,
+    "twitter_id" text NOT NULL,
     "twitter_creation_time" timestamp with time zone NOT NULL DEFAULT now(),
 
     "retweet_count" int default 0,
@@ -38,11 +38,11 @@ CREATE INDEX ON "tweet" ("twitter_id");
 CREATE TABLE "twitter_user" (
     "uid" text NOT NULL default '',
 
-    "twitter_id" bigint default 0,
+    "twitter_id" text NOT NULL,
     "description" text NOT NULL,
     "screen_name" text NOT NULL,
     "name" text NOT NULL,
-    "timezone" text NOT NULL,
+     "timezone" text NOT NULL,
     "utc_offset" int NOT NULL,
     "followers_count" int default 0,
 
