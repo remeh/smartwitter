@@ -14,7 +14,7 @@ import (
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Second * 3)
+		after := time.After(time.Minute * 3)
 
 		// ----------------------
 

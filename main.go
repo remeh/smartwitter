@@ -32,7 +32,9 @@ func main() {
 
 	ctx, cf := context.WithTimeout(context.Background(), time.Second*15)
 	defer cf()
+
 	go agent.GetTweets(ctx)
+	go agent.Unfavorite(ctx)
 
 	// start the webserver
 	// ----------------------

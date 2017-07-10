@@ -57,14 +57,17 @@ ALTER TABLE "tweet" ADD CONSTRAINT tweet_twitter_user FOREIGN KEY ("twitter_user
 
 -- Twitter Future Action
 
-CREATE TABLE "twitter_future_action" (
+CREATE TABLE "twitter_planned_action" (
     "uid" text NOT NULL default '',
 
-    "parameters" json default '[]',
+    "type" text NOT NULL,
+
+    "tweet_id" bigint NOT NULL,
 
     -- time
     "creation_time" timestamp with time zone NOT NULL DEFAULT now(),
-    "execution_time" timestamp with time zone NOT NULL DEFAULT now() + interval '12 hour'
+    "execution_time" timestamp with time zone NOT NULL DEFAULT now() + interval '12 hour',
+    "done" timestamp with time zone DEFAULT NULL
 );
 
 ----------------------

@@ -7,6 +7,7 @@ import (
 
 	"github.com/remeh/smartwitter/api"
 	"github.com/remeh/smartwitter/twitter"
+	"github.com/remeh/uuid"
 )
 
 type Like struct {
@@ -22,7 +23,7 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	tid, err := strconv.ParseInt(ptid, 10, 64)
 	if err != nil {
-		api.RenderErrJson(w, err)
+		api.RenderBadParameter(w, "tid")
 		return
 	}
 
@@ -37,6 +38,7 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// plan an action to automatically unlike
 	if au == "true" {
 		unfav := twitter.UnFavorite{
+			Uid:     uuid.New(),
 			TweetId: tid,
 		}
 		unfav.CreationTime = time.Now()
