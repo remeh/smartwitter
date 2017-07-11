@@ -112,7 +112,7 @@ func (u *UnLike) Store() error {
 		INSERT INTO "twitter_planned_action"
 		("uid", "type", "tweet_id", "creation_time", "execution_time", "done")
 		VALUES
-		($1, 'unfavorite', $2, $3, $4, NULL)
+		($1, 'unlike', $2, $3, $4, NULL)
 		`, u.Uid, u.TweetId, u.CreationTime, u.ExecutionTime)
 
 	return err

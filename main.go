@@ -30,7 +30,7 @@ func main() {
 	// start the agents
 	// ----------------------
 
-	ctx, cf := context.WithTimeout(context.Background(), time.Second*15)
+	ctx, cf := context.WithTimeout(context.Background(), time.Minute*60)
 	defer cf()
 
 	go agent.GetTweets(ctx)
