@@ -2,6 +2,7 @@ package twitter
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/remeh/smartwitter/storage"
@@ -17,9 +18,8 @@ type PlannedAction interface {
 	Forget() error
 	// Apply the action
 	Do() error
+	String() string
 }
-
-// ----------------------
 
 type action struct {
 	// TODO(remy): add user
@@ -29,35 +29,83 @@ type action struct {
 	ExecutionTime time.Time
 }
 
+// ----------------------
+
 type UnRetweets []UnRetweet
 
 type UnRetweet struct {
 	Uid     uuid.UUID
-	TweetId int64
+	TweetId string
 	action
 }
 
 func (u *UnRetweet) Do() error {
-	_, err := GetApi().UnRetweet(u.TweetId, true)
+	tid, err := strconv.ParseInt(u.TweetId, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	_, err = GetApi().UnRetweet(tid, true)
 	return err
 }
 
-type UnFavorites []UnFavorite
+func (u *UnRetweet) Store() error {
+	if u.Uid.IsNil() {
+		return fmt.Errorf("UnRetweet.Store(): nil Uid")
+	}
 
-type UnFavorite struct {
+	_, err := storage.DB().Exec(`
+		INSERT INTO "twitter_planned_action"
+		("uid", "type", "tweet_id", "creation_time", "execution_time", "done")
+		VALUES
+		($1, 'unretweet', $2, $3, $4, NULL)
+		`, u.Uid, u.TweetId, u.CreationTime, u.ExecutionTime)
+
+	return err
+}
+
+func (u *UnRetweet) Forget() error {
+	if u.Uid.IsNil() {
+		return fmt.Errorf("UnRetweet.Forget(): nil Uid")
+	}
+
+	_, err := storage.DB().Exec(`
+		UPDATE "twitter_planned_action"
+		SET
+			"done" = now()
+		WHERE
+			"uid" = $1
+	`, u.Uid)
+	return err
+}
+
+func (u *UnRetweet) String() string {
+	return fmt.Sprintf("UnRetweet: %v", u.Uid)
+}
+
+// ----------------------
+
+type UnLikes []UnLike
+
+type UnLike struct {
 	Uid     uuid.UUID
-	TweetId int64
+	TweetId string
 	action
 }
 
-func (u *UnFavorite) Do() error {
-	_, err := GetApi().Unfavorite(u.TweetId)
+func (u *UnLike) Do() error {
+	tid, err := strconv.ParseInt(u.TweetId, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	_, err = GetApi().Unfavorite(tid)
 	return err
 }
 
-func (u *UnFavorite) Store() error {
+func (u *UnLike) Store() error {
 	if u.Uid.IsNil() {
-		return fmt.Errorf("UnFavorite.Store(): nil Uid")
+		return fmt.Errorf("UnLike.Store(): nil Uid")
 	}
 
 	_, err := storage.DB().Exec(`
@@ -70,9 +118,9 @@ func (u *UnFavorite) Store() error {
 	return err
 }
 
-func (u *UnFavorite) Forget() error {
+func (u *UnLike) Forget() error {
 	if u.Uid.IsNil() {
-		return fmt.Errorf("UnFavorite.Forget(): nil Uid")
+		return fmt.Errorf("UnLike.Forget(): nil Uid")
 	}
 
 	_, err := storage.DB().Exec(`
@@ -83,4 +131,7 @@ func (u *UnFavorite) Forget() error {
 			"uid" = $1
 	`, u.Uid)
 	return err
+}
+func (u *UnLike) String() string {
+	return fmt.Sprintf("UnLike: %v", u.Uid)
 }

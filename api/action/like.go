@@ -21,9 +21,19 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ptid := api.EscapeOne(r.Form.Get("tid"))
 	au := api.EscapeOne(r.Form.Get("au")) // auto-unlike
 
+	if len(ptid) == 0 {
+		api.RenderBadParameter(w, "tid")
+		return
+	}
+
 	tid, err := strconv.ParseInt(ptid, 10, 64)
 	if err != nil {
 		api.RenderBadParameter(w, "tid")
+		return
+	}
+
+	if len(au) == 0 && au != "true" && au != "false" {
+		api.RenderBadParameter(w, "au")
 		return
 	}
 
@@ -37,14 +47,14 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// plan an action to automatically unlike
 	if au == "true" {
-		unfav := twitter.UnFavorite{
+		unlike := twitter.UnLike{
 			Uid:     uuid.New(),
-			TweetId: tid,
+			TweetId: ptid,
 		}
-		unfav.CreationTime = time.Now()
-		unfav.ExecutionTime = time.Now().Add(time.Hour * 144) // 6 days
+		unlike.CreationTime = time.Now()
+		unlike.ExecutionTime = time.Now().Add(time.Hour * 144) // 6 days
 
-		if err := unfav.Store(); err != nil {
+		if err := unlike.Store(); err != nil {
 			api.RenderErrJson(w, err)
 			return
 		}

@@ -34,7 +34,7 @@ func main() {
 	defer cf()
 
 	go agent.GetTweets(ctx)
-	go agent.Unfavorite(ctx)
+	go agent.PlannedActions(ctx)
 
 	// start the webserver
 	// ----------------------
