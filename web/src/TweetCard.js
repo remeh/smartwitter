@@ -15,9 +15,11 @@ class TweetCard extends Component {
       liking: false,
       liked: false,
       likeError: '',
+      likeSuccess: '',
       retweeting: false,
       retweeted: false,
       retweetError: '',
+      retweetSuccess: '',
     }
   }
 
@@ -33,11 +35,14 @@ class TweetCard extends Component {
         this.setState({
           liking: false,
           liked: true,
+          likeSuccess: 'Successfully liked',
+          likeError: '',
         });
     }).catch((response) => {
         this.setState({
           liking: false,
           liked: true,
+          likeSuccess: '',
           likeError: 'Either you\'ve already liked this tweet, either it\'s not available anymore.',
         });
     });
@@ -55,11 +60,14 @@ class TweetCard extends Component {
         this.setState({
           retweeting: false,
           retweeted: true,
+          retweetSuccess: 'Successfully retweeted',
+          retweetError: '',
         });
     }).catch((response) => {
         this.setState({
           retweeting: false,
           retweeted: true,
+          retweetSuccess: '',
           retweetError: 'Either you\'ve already retweeted this tweet, either it\'s not available anymore.',
         });
     });
@@ -86,8 +94,16 @@ class TweetCard extends Component {
             Retweet
           </Button>
         </div>
+        {this.state.likeSuccess && <Message color='green'>
+            {this.state.likeSuccess}
+          </Message>
+        }
         {this.state.likeError && <Message color='red'>
             {this.state.likeError}
+          </Message>
+        }
+        {this.state.retweetSuccess && <Message color='green'>
+            {this.state.retweetSuccess}
           </Message>
         }
         {this.state.retweetError && <Message color='red'>
