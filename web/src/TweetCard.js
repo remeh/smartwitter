@@ -13,11 +13,11 @@ class TweetCard extends Component {
 
     this.state = {
       liking: false,
-      liked: false,
+      liked: this.props.liked,
       likeError: '',
       likeSuccess: '',
       retweeting: false,
-      retweeted: false,
+      retweeted: this.props.retweeted,
       retweetError: '',
       retweetSuccess: '',
     }

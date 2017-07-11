@@ -21,6 +21,8 @@ type byKeywordsInfo struct {
 	RetweetCount         int    `json:"retweet_count"`
 	FavoriteCount        int    `json:"favorite_count"`
 	TwitterUserFollowers int    `json:"twitter_user_followers"`
+	Liked                bool   `json:"liked"`
+	Retweeted            bool   `json:"retweeted"`
 }
 
 func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +37,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// get the suggestion
 	// ----------------------
 
-	tweets, err := suggest.SuggestByKeywords(keywords)
+	tweets, tdas, err := suggest.SuggestByKeywords(keywords, 5)
 
 	if err != nil {
 		api.RenderErrJson(w, err)
@@ -54,6 +56,8 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		tda := tdas.Get(t.TwitterId)
+
 		data = append(data, byKeywordsInfo{
 			Uid:                  t.Uid().String(),
 			TweetId:              t.TwitterId,
@@ -63,6 +67,8 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			RetweetCount:         t.RetweetCount,
 			FavoriteCount:        t.FavoriteCount,
 			TwitterUserFollowers: tu.FollowersCount,
+			Liked:                tda.Liked,
+			Retweeted:            tda.Retweeted,
 		})
 	}
 

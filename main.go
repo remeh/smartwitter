@@ -48,9 +48,6 @@ func log(h http.Handler) http.Handler {
 	return adapter.LogAdapter(h)
 }
 
-func startJobs() {
-}
-
 func declareApiRoutes(s *Server) {
 	s.AddApi("/example", log(example.Example{}), "GET")
 

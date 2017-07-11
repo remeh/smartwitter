@@ -39,20 +39,33 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// ----------------------
 
-	// fav on Twitter
-	if _, err := twitter.GetApi().Favorite(tid); err != nil {
+	now := time.Now()
+
+	// store that this user has liked this tweet
+
+	// TODO(remy): user id
+	if err := twitter.TweetDoneActionDAO().Like(ptid, now); err != nil {
 		api.RenderErrJson(w, err)
 		return
 	}
 
+	// like on Twitter
+
+	println(tid)
+	//if _, err := twitter.GetApi().Favorite(tid); err != nil {
+	//	api.RenderErrJson(w, err)
+	//	return
+	//}
+
 	// plan an action to automatically unlike
+
 	if au == "true" {
 		unlike := twitter.UnLike{
 			Uid:     uuid.New(),
 			TweetId: ptid,
 		}
-		unlike.CreationTime = time.Now()
-		unlike.ExecutionTime = time.Now().Add(time.Hour * 144) // 6 days
+		unlike.CreationTime = now
+		unlike.ExecutionTime = now.Add(time.Hour * 144) // 6 days
 
 		if err := unlike.Store(); err != nil {
 			api.RenderErrJson(w, err)

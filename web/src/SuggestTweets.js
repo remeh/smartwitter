@@ -45,6 +45,8 @@ class SuggestTweets extends Component {
               tweet_id={tweet.tweet_id}
               text={tweet.text}
               link={tweet.link}
+              retweeted={tweet.retweeted}
+              liked={tweet.liked}
             />
             <Divider />
           </div>

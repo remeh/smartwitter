@@ -15,7 +15,7 @@ import (
 // tweets when it's time to do so.
 func PlannedActions(ctx context.Context) {
 	for {
-		after := time.After(time.Second * 5)
+		after := time.After(time.Minute * 1)
 
 		// ----------------------
 

@@ -9,9 +9,14 @@ import (
 	"github.com/lib/pq"
 )
 
-func SuggestByKeywords(keywords []string) (twitter.Tweets, error) {
+// TODO(remy): user
+func SuggestByKeywords(keywords []string, limit int) (twitter.Tweets, twitter.TweetDoneActions, error) {
 	var rows *sql.Rows
+	var tids []string
 	var err error
+
+	// get tweets with these keywords
+	// ----------------------
 
 	if rows, err = storage.DB().Query(`
 		select text, tweet.twitter_id, retweet_count, favorite_count, link, twitter_user_uid
@@ -23,9 +28,9 @@ func SuggestByKeywords(keywords []string) (twitter.Tweets, error) {
 			and
 			"tweet"."keywords" <@ $1::text[]
 		order by (favorite_count+retweet_count+followers_count) desc, "tweet".uid
-		limit 3;
-	`, pq.Array(keywords)); err != nil {
-		return nil, err
+		limit $2;
+	`, pq.Array(keywords), limit); err != nil {
+		return nil, nil, err
 	}
 
 	defer rows.Close()
@@ -35,11 +40,21 @@ func SuggestByKeywords(keywords []string) (twitter.Tweets, error) {
 		t := twitter.Tweet{}
 
 		if err := rows.Scan(&t.Text, &t.TwitterId, &t.RetweetCount, &t.FavoriteCount, &t.Link, &t.TwitterUserUid); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
+
+		tids = append(tids, t.TwitterId)
 
 		rv = append(rv, t)
 	}
 
-	return rv, nil
+	// tweet states for this user
+	// ----------------------
+
+	tdas, err := twitter.TweetDoneActionDAO().FindByTweets(tids)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return rv, tdas, nil
 }
