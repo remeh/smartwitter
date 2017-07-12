@@ -14,7 +14,7 @@ import (
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Minute * 5)
+		after := time.After(time.Second * 5)
 
 		// ----------------------
 
@@ -41,7 +41,7 @@ func getTweets(ctx context.Context) error {
 		"count":       []string{"30"},
 		"result_type": []string{"recent"},
 	}
-	sr, err := twitter.GetApi().GetSearch("golang", v)
+	sr, err := twitter.GetApi().GetSearch("golang, code", v)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,6 @@ func getTweets(ctx context.Context) error {
 		// atm, we want to ignore the retweets to
 		// not fill up the database with retweets.
 		if strings.Contains(s.FullText, "RT @") {
-			log.Debug("ignoring tweet:", s.User.Name, s.FullText)
 			continue
 		}
 
@@ -60,7 +59,7 @@ func getTweets(ctx context.Context) error {
 
 		// tweet
 
-		t := twitter.TweetFromTweet(s, now, []string{"golang"})
+		t := twitter.TweetFromTweet(s, now, []string{"golang", "code"})
 
 		// twitter user
 

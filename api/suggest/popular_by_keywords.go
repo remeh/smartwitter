@@ -21,6 +21,7 @@ type byKeywordsInfo struct {
 	RetweetCount         int    `json:"retweet_count"`
 	FavoriteCount        int    `json:"favorite_count"`
 	TwitterUserFollowers int    `json:"twitter_user_followers"`
+	Ignored              bool   `json:"liked"`
 	Liked                bool   `json:"liked"`
 	Retweeted            bool   `json:"retweeted"`
 }
@@ -31,8 +32,6 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	keywords := api.Escape(r.Form["k"])
-
-	// TODO(remy): trim all keywords
 
 	// get the suggestion
 	// ----------------------
@@ -67,6 +66,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			RetweetCount:         t.RetweetCount,
 			FavoriteCount:        t.FavoriteCount,
 			TwitterUserFollowers: tu.FollowersCount,
+			Ignored:              tda.Ignored,
 			Liked:                tda.Liked,
 			Retweeted:            tda.Retweeted,
 		})

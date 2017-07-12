@@ -39,7 +39,17 @@ func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// ----------------------
 
-	// fav on Twitter
+	now := time.Now()
+
+	// store that this user has liked this tweet
+
+	// TODO(remy): user id
+	if err := twitter.TweetDoneActionDAO().Retweet(ptid, now); err != nil {
+		api.RenderErrJson(w, err)
+		return
+	}
+
+	// rt on Twitter
 	if _, err := twitter.GetApi().Retweet(tid, true); err != nil {
 		api.RenderErrJson(w, err)
 		return
@@ -51,8 +61,8 @@ func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Uid:     uuid.New(),
 			TweetId: ptid,
 		}
-		unrt.CreationTime = time.Now()
-		unrt.ExecutionTime = time.Now().Add(time.Hour * 144) // 6 days
+		unrt.CreationTime = now
+		unrt.ExecutionTime = now.Add(time.Hour * 144) // 6 days
 
 		if err := unrt.Store(); err != nil {
 			api.RenderErrJson(w, err)

@@ -74,6 +74,7 @@ CREATE TABLE "twitter_planned_action" (
 CREATE TABLE "tweet_done_action" (
     "user_uid" text NOT NULL,
     "tweet_id" text NOT NULL,
+    "ignored_time" timestamp with time zone DEFAULT NULL,
     "liked_time" timestamp with time zone DEFAULT NULL,
     "retweeted_time" timestamp with time zone DEFAULT NULL
 );

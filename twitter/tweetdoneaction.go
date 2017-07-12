@@ -10,8 +10,10 @@ type TweetDoneActions []TweetDoneAction
 
 type TweetDoneAction struct {
 	TweetId     string
+	Ignored     bool
 	Retweeted   bool
 	Liked       bool
+	IgnoreTime  time.Time
 	RetweetTime time.Time
 	LikeTime    time.Time
 }
