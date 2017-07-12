@@ -7,6 +7,25 @@ GRANT ALL ON DATABASE "smartwitter" TO "smartwitter";
 \connect "smartwitter";
 set role "smartwitter";
 
+-- User
+
+CREATE TABLE "user" (
+    "uid" text NOT NULL,
+    "access_secret" text NOT NULL,
+    "access_token" text NOT NULL
+
+    -- emailing
+    "unsubscribe_token" text DEFAULT '',
+
+    -- payment
+    "stripe_token" text DEFAULT '',
+
+    "creation_time" timestamp with time zone NOT NULL default now(),
+    "last_login" timestamp with time zone NOT NULL default now(),
+)
+
+CREATE UNIQUE INDEX ON "user" ("uid");
+
 -- Tweet
 
 CREATE TABLE "tweet" (
