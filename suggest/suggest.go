@@ -31,7 +31,7 @@ func SuggestByKeywords(keywords []string, duration time.Duration, limit int) (tw
 			and
 			"tweet"."keywords" <@ $1::text[]
 			and
-			"creation_time" > $2
+			"tweet"."creation_time" > $2
 		order by (favorite_count+retweet_count+followers_count) desc, "tweet".uid
 		limit $3;
 	`, pq.Array(keywords), ct, limit); err != nil {
