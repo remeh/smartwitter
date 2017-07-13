@@ -2,6 +2,7 @@ package suggest
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/remeh/smartwitter/api"
 	"github.com/remeh/smartwitter/suggest"
@@ -36,7 +37,9 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// get the suggestion
 	// ----------------------
 
-	tweets, tdas, err := suggest.SuggestByKeywords(keywords, 5)
+	since := time.Hour * 2
+
+	tweets, tdas, err := suggest.SuggestByKeywords(keywords, since, 5)
 
 	if err != nil {
 		api.RenderErrJson(w, err)
