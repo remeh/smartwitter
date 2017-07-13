@@ -12,7 +12,7 @@ set role "smartwitter";
 CREATE TABLE "user" (
     "uid" text NOT NULL,
     "access_secret" text NOT NULL,
-    "access_token" text NOT NULL
+    "access_token" text NOT NULL,
 
     -- emailing
     "unsubscribe_token" text DEFAULT '',
@@ -21,8 +21,8 @@ CREATE TABLE "user" (
     "stripe_token" text DEFAULT '',
 
     "creation_time" timestamp with time zone NOT NULL default now(),
-    "last_login" timestamp with time zone NOT NULL default now(),
-)
+    "last_login" timestamp with time zone NOT NULL default now()
+);
 
 CREATE UNIQUE INDEX ON "user" ("uid");
 
