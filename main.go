@@ -61,6 +61,6 @@ func declareApiRoutes(s *Server) {
 	// twitter sign in
 	// ----------------------
 
-	s.AddApi("/1.0/twitter/signin", log(twitter.RedirectUserToTwitter{}), "GET")
-	s.AddApi("/1.0/twitter/token", log(twitter.GetTwitterToken{}), "GET")
+	s.AddApi("/twitter/signin", log(twitter.RedirectUserToTwitter{}), "GET")
+	s.AddApi("/twitter/token", log(twitter.GetTwitterToken{}), "GET", "POST", "PUT")
 }

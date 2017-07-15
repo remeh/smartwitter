@@ -47,10 +47,17 @@ func (c GetTwitterToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	verificationCode := values.Get("oauth_verifier")
 	tokenKey := values.Get("oauth_token")
 
+	if _, ok := tokens[tokenKey]; !ok {
+		// TODO(remy):!
+		w.WriteHeader(400)
+		return
+	}
+
 	atoken, err := cons.AuthorizeToken(tokens[tokenKey], verificationCode)
 	defer delete(tokens, tokenKey)
 
 	if err != nil {
+		// TODO(remy):!
 		w.WriteHeader(500)
 		log.Error(err)
 		return
@@ -60,6 +67,7 @@ func (c GetTwitterToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	tu, err := api.GetSelf(nil)
 	if err != nil {
 		w.WriteHeader(500)
+		// TODO(remy):!
 		log.Error(err)
 		return
 	}
