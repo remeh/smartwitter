@@ -11,8 +11,10 @@ set role "smartwitter";
 
 CREATE TABLE "user" (
     "uid" text NOT NULL,
-    "access_secret" text NOT NULL,
-    "access_token" text NOT NULL,
+    "twitter_secret" text DEFAULT NULL,
+    "twitter_token" text DEFAULT NULL,
+    "twitter_id" text DEFAULT NULL,
+    "twitter_name" text DEFAULT NULL,
 
     -- emailing
     "unsubscribe_token" text DEFAULT '',
