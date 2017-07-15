@@ -14,6 +14,7 @@ CREATE TABLE "user" (
     "twitter_secret" text DEFAULT NULL,
     "twitter_token" text DEFAULT NULL,
     "twitter_id" text DEFAULT NULL,
+    "twitter_username" text DEFAULT NULL,
     "twitter_name" text DEFAULT NULL,
 
     -- emailing

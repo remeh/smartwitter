@@ -1,7 +1,6 @@
 package twitter
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -19,9 +18,7 @@ type RedirectUserToTwitter struct{}
 
 func (c RedirectUserToTwitter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cons := newConsumer()
-	// TODO(remy): real route.
-	//tokenUrl := fmt.Sprintf("http://%s:9999/api/twitter/token", r.Host)
-	token, requestUrl, err := cons.GetRequestTokenAndUrl()
+	token, requestUrl, err := cons.GetRequestTokenAndUrl("")
 	if err != nil {
 		// TODO(remy):
 		log.Error(err)
@@ -85,8 +82,9 @@ func (c GetTwitterToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		TwitterToken:  atoken.Token,
 		TwitterSecret: atoken.Secret,
 
-		TwitterId:   tu.IdStr,
-		TwitterName: tu.Name,
+		TwitterId:       tu.IdStr,
+		TwitterName:     tu.Name,
+		TwitterUsername: tu.ScreenName,
 	}
 
 	if err := account.UserDAO().UpsertOnLogin(u); err != nil {

@@ -19,10 +19,11 @@ type User struct {
 	CreationTime time.Time
 	LastLogin    time.Time
 
-	TwitterToken  string
-	TwitterSecret string
-	TwitterId     string
-	TwitterName   string
+	TwitterToken    string
+	TwitterSecret   string
+	TwitterId       string
+	TwitterUsername string
+	TwitterName     string
 }
 
 // Crypt crypts the given password using bcrypt.
