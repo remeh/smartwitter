@@ -20,7 +20,7 @@ type RedirectUserToTwitter struct{}
 func (c RedirectUserToTwitter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cons := newConsumer()
 	// TODO(remy): real route.
-	tokenUrl := fmt.Sprintf("http://%s:9999/maketoken", r.Host)
+	tokenUrl := fmt.Sprintf("http://%s:9999/api/twitter/token", r.Host)
 	token, requestUrl, err := cons.GetRequestTokenAndUrl(tokenUrl)
 	if err != nil {
 		// TODO(remy):
