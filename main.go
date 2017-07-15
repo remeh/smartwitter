@@ -11,6 +11,7 @@ import (
 	"github.com/remeh/smartwitter/api/adapter"
 	"github.com/remeh/smartwitter/api/example"
 	"github.com/remeh/smartwitter/api/suggest"
+	"github.com/remeh/smartwitter/api/twitter"
 	"github.com/remeh/smartwitter/config"
 	l "github.com/remeh/smartwitter/log"
 	"github.com/remeh/smartwitter/storage"
@@ -56,4 +57,10 @@ func declareApiRoutes(s *Server) {
 	s.AddApi("/1.0/suggest", log(suggest.ByKeywords{}), "GET")
 
 	s.AddApi("/1.0/like", log(action.Like{}), "POST")
+
+	// twitter sign in
+	// ----------------------
+
+	s.AddApi("/1.0/twitter/signin", log(twitter.RedirectUserToTwitter{}), "GET")
+	s.AddApi("/1.0/twitter/token", log(twitter.GetTwitterToken{}), "GET")
 }

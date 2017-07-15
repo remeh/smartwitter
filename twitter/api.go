@@ -1,9 +1,10 @@
 package twitter
 
 import (
-	"github.com/remeh/anaconda"
-
 	"github.com/remeh/smartwitter/config"
+
+	"github.com/mrjones/oauth"
+	"github.com/remeh/anaconda"
 )
 
 var api *anaconda.TwitterApi
@@ -12,11 +13,16 @@ func GetApi() *anaconda.TwitterApi {
 	if api != nil {
 		return api
 	}
-
 	c := config.Env()
-
 	anaconda.SetConsumerKey(c.ConsumerKey)
 	anaconda.SetConsumerSecret(c.ConsumerSecret)
 	api = anaconda.NewTwitterApi(c.AccessToken, c.AccessTokenSecret)
 	return GetApi()
+}
+
+func GetAuthApi(atoken *oauth.AccessToken) *anaconda.TwitterApi {
+	c := config.Env()
+	anaconda.SetConsumerKey(c.ConsumerKey)
+	anaconda.SetConsumerSecret(c.ConsumerSecret)
+	return anaconda.NewTwitterApi(atoken.Token, atoken.Secret)
 }
