@@ -62,7 +62,7 @@ func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// rt on Twitter
-	if _, err := twitter.GetApi().Retweet(tid, true); err != nil {
+	if _, err := twitter.GetAuthApi(user).Retweet(tid, true); err != nil {
 		api.RenderErrJson(w, err)
 		return
 	}
