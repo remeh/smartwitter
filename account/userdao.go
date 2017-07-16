@@ -90,7 +90,7 @@ func (d *userDAO) Exists(sessionToken string) (bool, error) {
 			AND
 			"session_token" IS NOT NULL
 		LIMIT 1
-	`).Scan(&s); err != nil {
+	`, sessionToken).Scan(&s); err != nil {
 		return false, err
 	}
 	return s > 0, nil
