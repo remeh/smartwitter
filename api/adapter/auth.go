@@ -26,6 +26,7 @@ func (a AuthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// ok
 		sWriter := &StatusWriter{w, 200}
 		a.handler.ServeHTTP(sWriter, r)
+		return
 	}
 
 	api.RenderForbiddenJson(w)
