@@ -90,6 +90,10 @@ func (d *tweetDoneActionDAO) FindByTweets(tids []string) (TweetDoneActions, erro
 		params[i] = tids[i]
 	}
 
+	if len(tids) == 0 {
+		return make(TweetDoneActions, 0), nil
+	}
+
 	rows, err := storage.DB().Query(`
 		select distinct
 			"tweet"."twitter_id",
