@@ -42,6 +42,7 @@ func SetSessionCookie(w http.ResponseWriter, val string) {
 		// TODO(remy): cookie options
 		Name:  sessionCookie,
 		Value: val,
+		Path:  "/api",
 	}
 	http.SetCookie(w, c)
 }
