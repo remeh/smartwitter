@@ -64,7 +64,7 @@ func (d *userDAO) FindBySession(sessionToken string) (*User, error) {
 		WHERE
 			session_token = $1
 		LIMIT 1
-	`).Scan(
+	`, sessionToken).Scan(
 		&rv.Uid,
 		&rv.CreationTime,
 		&rv.LastLogin,
