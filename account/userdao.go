@@ -57,7 +57,7 @@ func (d *userDAO) UpsertOnLogin(u *User) error {
 }
 
 func (d *userDAO) FindBySession(sessionToken string) (*User, error) {
-	var rv *User
+	rv := &User{}
 
 	if err := d.DB.QueryRow(`
 		SELECT "uid", "creation_time", "last_login", "twitter_token", "twitter_secret", "twitter_id", "twitter_name", "twitter_username", "twitter_token" FROM "user"
