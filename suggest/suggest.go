@@ -29,7 +29,7 @@ func SuggestByKeywords(keywords []string, duration time.Duration, limit int) (tw
 		where
 			not "text" LIKE 'RT @%'
 			and
-			"tweet"."keywords" <@ $1::text[]
+			"tweet"."keywords" @> $1::text[]
 			and
 			"tweet"."creation_time" > $2
 		order by (favorite_count+retweet_count+followers_count) desc, "tweet".uid
