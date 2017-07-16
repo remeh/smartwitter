@@ -16,14 +16,16 @@ var (
 type User struct {
 	Uid uuid.UUID `json:"uid"`
 
-	CreationTime time.Time
-	LastLogin    time.Time
-
 	TwitterToken    string
 	TwitterSecret   string
 	TwitterId       string
 	TwitterUsername string
 	TwitterName     string
+
+	SessionToken string
+
+	CreationTime time.Time
+	LastLogin    time.Time
 }
 
 // Crypt crypts the given password using bcrypt.
@@ -48,7 +50,7 @@ func Check(hash, password string) bool {
 // - first 8 chars of the user uid
 // - with 3 randoms uuids (without -) appended.
 func UnsubToken(uid uuid.UUID) string {
-	end := randTok()
+	end := RandTok()
 	start := uid.String()[0:8]
 	return "1" + start + end
 }
@@ -60,7 +62,7 @@ func UnsubToken(uid uuid.UUID) string {
 // - first 8 chars of the user uid
 // - with 3 randoms uuids (without -) appended.
 func PasswordResetToken(uid uuid.UUID) string {
-	end := randTok()
+	end := RandTok()
 	start := uid.String()[0:8]
 	return "1" + start + end
 }
@@ -73,7 +75,7 @@ func GenTwitterUid(twitterId string) uuid.UUID {
 
 // randTok generates a random token composed of 3 uuids
 // merge without the - char.
-func randTok() string {
+func RandTok() string {
 	rv := ""
 	for i := 0; i < 3; i++ {
 		str := uuid.New().String()

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/remeh/smartwitter/account"
+	"github.com/remeh/smartwitter/api"
 	"github.com/remeh/smartwitter/config"
 	"github.com/remeh/smartwitter/log"
 	. "github.com/remeh/smartwitter/twitter"
@@ -60,8 +61,11 @@ func (c GetTwitterToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api := GetAuthApi(atoken)
-	tu, err := api.GetSelf(nil)
+	aapi := GetAuthApi(&account.User{
+		TwitterToken:  atoken.Token,
+		TwitterSecret: atoken.Secret,
+	})
+	tu, err := aapi.GetSelf(nil)
 	if err != nil {
 		w.WriteHeader(500)
 		// TODO(remy):!
@@ -79,24 +83,26 @@ func (c GetTwitterToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		CreationTime: now,
 		LastLogin:    now,
 
-		TwitterToken:  atoken.Token,
-		TwitterSecret: atoken.Secret,
-
+		TwitterToken:    atoken.Token,
+		TwitterSecret:   atoken.Secret,
 		TwitterId:       tu.IdStr,
 		TwitterName:     tu.Name,
 		TwitterUsername: tu.ScreenName,
+
+		SessionToken: account.RandTok(),
 	}
 
 	if err := account.UserDAO().UpsertOnLogin(u); err != nil {
+		// TODO(remy):!
 		w.WriteHeader(500)
 		log.Error(err)
 		return
 	}
 
-	// go to the application
+	// set the session cookie and go to the application
+	api.SetSessionCookie(w, u.SessionToken)
 
-	// TODO(remy): here we have the access token for this user
-	// we want to get its IDs
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 func newConsumer() *oauth.Consumer {

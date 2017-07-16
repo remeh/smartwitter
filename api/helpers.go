@@ -8,7 +8,12 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/log"
+)
+
+const (
+	sessionCookie = "s"
 )
 
 // Request
@@ -30,6 +35,31 @@ func ReadJsonBody(r *http.Request, object interface{}) error {
 	}
 
 	return json.Unmarshal(data, object)
+}
+
+func SetSessionCookie(w http.ResponseWriter, val string) {
+	c := &http.Cookie{
+		// TODO(remy): cookie options
+		Name:  sessionCookie,
+		Value: val,
+	}
+	http.SetCookie(w, c)
+}
+
+func GetSessionCookie(r *http.Request) string {
+	if c, err := r.Cookie(sessionCookie); err != nil {
+		return ""
+	} else {
+		return c.Value
+	}
+}
+
+func GetUser(r *http.Request) (*account.User, error) {
+	s := GetSessionCookie(r)
+	if len(s) == 0 {
+		return nil, fmt.Errorf("GetUser: empty session cookie")
+	}
+	return account.UserDAO().FindBySession(s)
 }
 
 func Escape(strs []string) []string {

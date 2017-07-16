@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/api"
 	"github.com/remeh/smartwitter/twitter"
 	"github.com/remeh/uuid"
@@ -14,6 +15,17 @@ type Like struct {
 }
 
 func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var user *account.User
+	var err error
+
+	if user, err = api.GetUser(r); err != nil {
+		api.RenderErrJson(w, err)
+		return
+	} else if user == nil {
+		api.RenderForbiddenJson(w)
+		return
+	}
+
 	// parse form
 	// ----------------------
 
@@ -51,11 +63,10 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// like on Twitter
 
-	println(tid)
-	//if _, err := twitter.GetApi().Favorite(tid); err != nil {
-	//	api.RenderErrJson(w, err)
-	//	return
-	//}
+	if _, err := twitter.GetAuthApi(user).Favorite(tid); err != nil {
+		api.RenderErrJson(w, err)
+		return
+	}
 
 	// plan an action to automatically unlike
 

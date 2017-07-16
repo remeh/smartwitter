@@ -49,14 +49,17 @@ func log(h http.Handler) http.Handler {
 	return adapter.LogAdapter(h)
 }
 
+func auth(h http.Handler) http.Handler {
+	return adapter.AuthAdapter(h)
+}
+
 func declareApiRoutes(s *Server) {
 	s.AddApi("/example", log(example.Example{}), "GET")
 
 	// ----------------------
 
-	s.AddApi("/1.0/suggest", log(suggest.ByKeywords{}), "GET")
-
-	s.AddApi("/1.0/like", log(action.Like{}), "POST")
+	s.AddApi("/1.0/suggest", auth(log(suggest.ByKeywords{})), "GET")
+	s.AddApi("/1.0/like", auth(log(action.Like{})), "POST")
 
 	// twitter sign in
 	// ----------------------
