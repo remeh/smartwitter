@@ -3,13 +3,14 @@ package twitter
 import (
 	"time"
 
-	"github.com/remeh/smartwitter/log"
+	"github.com/remeh/uuid"
 )
 
 type TweetDoneActions []TweetDoneAction
 
 type TweetDoneAction struct {
 	TweetId     string
+	UserUid     uuid.UUID
 	Ignored     bool
 	Retweeted   bool
 	Liked       bool
@@ -18,12 +19,11 @@ type TweetDoneAction struct {
 	LikeTime    time.Time
 }
 
-func (tws TweetDoneActions) Get(tid string) TweetDoneAction {
+func (tws TweetDoneActions) Get(tid string) (TweetDoneAction, bool) {
 	for _, tw := range tws {
 		if tw.TweetId == tid {
-			return tw
+			return tw, true
 		}
 	}
-	log.Warning("TweetDoneActions.Get() didn't find the TweetDoneAction.")
-	return TweetDoneAction{TweetId: tid}
+	return TweetDoneAction{TweetId: tid}, false
 }

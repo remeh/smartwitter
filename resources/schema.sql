@@ -86,6 +86,7 @@ CREATE TABLE "twitter_planned_action" (
     "uid" text NOT NULL default '',
 
     "type" text NOT NULL,
+    "user_uid" text NOT NULL, -- author of the action
     "tweet_id" text NOT NULL,
 
     -- time

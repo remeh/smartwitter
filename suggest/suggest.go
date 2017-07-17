@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/storage"
 	"github.com/remeh/smartwitter/twitter"
 
@@ -11,7 +12,7 @@ import (
 )
 
 // TODO(remy): user
-func SuggestByKeywords(keywords []string, duration time.Duration, limit int) (twitter.Tweets, twitter.TweetDoneActions, error) {
+func SuggestByKeywords(user *account.User, keywords []string, duration time.Duration, limit int) (twitter.Tweets, twitter.TweetDoneActions, error) {
 	var rows *sql.Rows
 	var tids []string
 	var err error
@@ -56,7 +57,7 @@ func SuggestByKeywords(keywords []string, duration time.Duration, limit int) (tw
 	// tweet states for this user
 	// ----------------------
 
-	tdas, err := twitter.TweetDoneActionDAO().FindByTweets(tids)
+	tdas, err := twitter.TweetDoneActionDAO().FindByTweets(user.Uid, tids)
 	if err != nil {
 		return nil, nil, err
 	}

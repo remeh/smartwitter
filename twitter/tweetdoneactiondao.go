@@ -7,6 +7,7 @@ import (
 	"github.com/lib/pq"
 	"github.com/remeh/smartwitter/log"
 	"github.com/remeh/smartwitter/storage"
+	"github.com/remeh/uuid"
 )
 
 type tweetDoneActionDAO struct {
@@ -39,8 +40,7 @@ func (d *tweetDoneActionDAO) InitStmt() error {
 	return err
 }
 
-// TODO(remy): user
-func (d *tweetDoneActionDAO) Like(tid string, t time.Time) error {
+func (d *tweetDoneActionDAO) Like(userUid uuid.UUID, tid string, t time.Time) error {
 	if _, err := storage.DB().Exec(`
 		INSERT INTO "tweet_done_action"
 		("user_uid", "tweet_id", "liked_time")
@@ -48,14 +48,13 @@ func (d *tweetDoneActionDAO) Like(tid string, t time.Time) error {
 		($1, $2, $3)
 		ON CONFLICT ("user_uid", "tweet_id") DO UPDATE SET
 			"liked_time" = $3
-	`, "", tid, t); err != nil {
+	`, userUid, tid, t); err != nil {
 		return err
 	}
 	return nil
 }
 
-// TODO(remy): user
-func (d *tweetDoneActionDAO) Retweet(tid string, t time.Time) error {
+func (d *tweetDoneActionDAO) Retweet(userUid uuid.UUID, tid string, t time.Time) error {
 	if _, err := storage.DB().Exec(`
 		INSERT INTO "tweet_done_action"
 		("user_uid", "tweet_id", "retweeted_time")
@@ -63,14 +62,13 @@ func (d *tweetDoneActionDAO) Retweet(tid string, t time.Time) error {
 		($1, $2, $3)
 		ON CONFLICT ("user_uid", "tweet_id") DO UPDATE SET
 			"retweeted_time" = $3
-	`, "", tid, t); err != nil {
+	`, userUid, tid, t); err != nil {
 		return err
 	}
 	return nil
 }
 
-// TODO(remy): user
-func (d *tweetDoneActionDAO) Ignore(tid string, t time.Time) error {
+func (d *tweetDoneActionDAO) Ignore(userUid uuid.UUID, tid string, t time.Time) error {
 	if _, err := storage.DB().Exec(`
 		INSERT INTO "tweet_done_action"
 		("user_uid", "tweet_id", "ignore_time")
@@ -78,14 +76,15 @@ func (d *tweetDoneActionDAO) Ignore(tid string, t time.Time) error {
 		($1, $2, $3)
 		ON CONFLICT ("user_uid", "tweet_id") DO UPDATE SET
 			"ignore_time" = $3
-	`, "", tid, t); err != nil {
+	`, userUid, tid, t); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *tweetDoneActionDAO) FindByTweets(tids []string) (TweetDoneActions, error) {
-	params := make([]interface{}, len(tids))
+func (d *tweetDoneActionDAO) FindByTweets(userUid uuid.UUID, tids []string) (TweetDoneActions, error) {
+	params := make([]interface{}, len(tids)+1)
+	params[0] = userUid
 	for i := 0; i < len(tids); i++ {
 		params[i] = tids[i]
 	}
@@ -97,6 +96,7 @@ func (d *tweetDoneActionDAO) FindByTweets(tids []string) (TweetDoneActions, erro
 	rows, err := storage.DB().Query(`
 		select distinct
 			"tweet"."twitter_id",
+			coalesce("tweet_done_action"."user_uid", ''),
 			"tweet_done_action"."ignored_time",
 			"tweet_done_action"."liked_time",
 			"tweet_done_action"."retweeted_time",
@@ -104,11 +104,12 @@ func (d *tweetDoneActionDAO) FindByTweets(tids []string) (TweetDoneActions, erro
 			"tweet_done_action"."liked_time" IS NOT NULL,
 			"tweet_done_action"."retweeted_time" IS NOT NULL
 		from "tweet"
-		left join "tweet_done_action" ON
+		join "tweet_done_action" ON
 			"tweet_done_action"."tweet_id" = "tweet"."twitter_id"
-			-- TODO and user =
+			and
+			"tweet_done_action"."user_uid" = $1
 		where
-			"tweet"."twitter_id" IN `+storage.InClause(1, len(tids))+`
+			"tweet"."twitter_id" IN `+storage.InClause(2, len(tids))+`
 		`, params...)
 
 	if err != nil {
@@ -124,7 +125,7 @@ func (d *tweetDoneActionDAO) FindByTweets(tids []string) (TweetDoneActions, erro
 
 		var ignoreTime, likeTime, rtTime pq.NullTime
 
-		if err := rows.Scan(&tda.TweetId, &ignoreTime, &likeTime, &rtTime, &tda.Ignored, &tda.Liked, &tda.Retweeted); err != nil {
+		if err := rows.Scan(&tda.TweetId, &tda.UserUid, &ignoreTime, &likeTime, &rtTime, &tda.Ignored, &tda.Liked, &tda.Retweeted); err != nil {
 			return nil, err
 		}
 

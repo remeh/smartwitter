@@ -22,7 +22,8 @@ type PlannedAction interface {
 }
 
 type action struct {
-	// TODO(remy): add user
+	UserUid uuid.UUID
+
 	// Time at which this action has been created
 	CreationTime time.Time
 	// Time at which the action must be executed
@@ -56,10 +57,10 @@ func (u *UnRetweet) Store() error {
 
 	_, err := storage.DB().Exec(`
 		INSERT INTO "twitter_planned_action"
-		("uid", "type", "tweet_id", "creation_time", "execution_time", "done")
+		("uid", "user_uid", "type", "tweet_id", "creation_time", "execution_time", "done")
 		VALUES
-		($1, 'unretweet', $2, $3, $4, NULL)
-		`, u.Uid, u.TweetId, u.CreationTime, u.ExecutionTime)
+		($1, $2, 'unretweet', $3, $4, $5, NULL)
+		`, u.Uid, u.UserUid, u.TweetId, u.CreationTime, u.ExecutionTime)
 
 	return err
 }
@@ -110,10 +111,10 @@ func (u *UnLike) Store() error {
 
 	_, err := storage.DB().Exec(`
 		INSERT INTO "twitter_planned_action"
-		("uid", "type", "tweet_id", "creation_time", "execution_time", "done")
+		("uid", "user_uid", "type", "tweet_id", "creation_time", "execution_time", "done")
 		VALUES
-		($1, 'unlike', $2, $3, $4, NULL)
-		`, u.Uid, u.TweetId, u.CreationTime, u.ExecutionTime)
+		($1, $2, 'unlike', $3, $4, $5, NULL)
+		`, u.Uid, u.UserUid, u.TweetId, u.CreationTime, u.ExecutionTime)
 
 	return err
 }

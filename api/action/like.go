@@ -56,7 +56,7 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// store that this user has liked this tweet
 
 	// TODO(remy): user id
-	if err := twitter.TweetDoneActionDAO().Like(ptid, now); err != nil {
+	if err := twitter.TweetDoneActionDAO().Like(user.Uid, ptid, now); err != nil {
 		api.RenderErrJson(w, err)
 		return
 	}
@@ -75,6 +75,7 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Uid:     uuid.New(),
 			TweetId: ptid,
 		}
+		unlike.UserUid = user.Uid
 		unlike.CreationTime = now
 		unlike.ExecutionTime = now.Add(time.Hour * 144) // 6 days
 

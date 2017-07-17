@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/api"
 	"github.com/remeh/smartwitter/twitter"
 	"github.com/remeh/uuid"
@@ -14,6 +15,17 @@ type Retweet struct {
 }
 
 func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var user *account.User
+	var err error
+
+	if user, err = api.GetUser(r); err != nil {
+		api.RenderErrJson(w, err)
+		return
+	} else if user == nil {
+		api.RenderForbiddenJson(w)
+		return
+	}
+
 	// parse form
 	// ----------------------
 
@@ -44,7 +56,7 @@ func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// store that this user has liked this tweet
 
 	// TODO(remy): user id
-	if err := twitter.TweetDoneActionDAO().Retweet(ptid, now); err != nil {
+	if err := twitter.TweetDoneActionDAO().Retweet(user.Uid, ptid, now); err != nil {
 		api.RenderErrJson(w, err)
 		return
 	}
@@ -61,6 +73,7 @@ func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Uid:     uuid.New(),
 			TweetId: ptid,
 		}
+		unrt.UserUid = user.Uid
 		unrt.CreationTime = now
 		unrt.ExecutionTime = now.Add(time.Hour * 144) // 6 days
 

@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/api"
 	"github.com/remeh/smartwitter/suggest"
 )
 
-type ByKeywords struct {
-}
+type ByKeywords struct{}
 
 type byKeywords []byKeywordsInfo
 
@@ -22,12 +22,26 @@ type byKeywordsInfo struct {
 	RetweetCount         int    `json:"retweet_count"`
 	FavoriteCount        int    `json:"favorite_count"`
 	TwitterUserFollowers int    `json:"twitter_user_followers"`
-	Ignored              bool   `json:"liked"`
+	Ignored              bool   `json:"ignored"`
 	Liked                bool   `json:"liked"`
 	Retweeted            bool   `json:"retweeted"`
 }
 
 func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// user
+	// ----------------------
+
+	var user *account.User
+	var err error
+
+	if user, err = api.GetUser(r); err != nil {
+		api.RenderErrJson(w, err)
+		return
+	} else if user == nil {
+		api.RenderForbiddenJson(w)
+		return
+	}
+
 	// parse form
 	// ----------------------
 
@@ -39,7 +53,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	since := time.Hour * 2
 
-	tweets, tdas, err := suggest.SuggestByKeywords(keywords, since, 5)
+	tweets, tdas, err := suggest.SuggestByKeywords(user, keywords, since, 5)
 
 	if err != nil {
 		api.RenderErrJson(w, err)
@@ -58,7 +72,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tda := tdas.Get(t.TwitterId)
+		tda, _ := tdas.Get(t.TwitterId)
 
 		data = append(data, byKeywordsInfo{
 			Uid:                  t.Uid().String(),
