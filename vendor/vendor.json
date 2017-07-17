@@ -39,6 +39,18 @@
 			"revisionTime": "2017-06-22T02:37:16Z"
 		},
 		{
+			"checksumSHA1": "iIUYZyoanCQQTUaWsu8b+iOSPt4=",
+			"path": "github.com/gorilla/context",
+			"revision": "215affda49addc4c8ef7e2534915df2c8c35c6cd",
+			"revisionTime": "2014-12-17T16:02:51Z"
+		},
+		{
+			"checksumSHA1": "8jXj6IMkk1B0LdIYgVG5Vn01/NU=",
+			"path": "github.com/gorilla/mux",
+			"revision": "ee1815431e497d3850809578c93ab6705f1a19f7",
+			"revisionTime": "2015-08-20T05:15:06Z"
+		},
+		{
 			"checksumSHA1": "Wh2YCiWY/VIAEEQGLS7sMB9isXk=",
 			"path": "github.com/lib/pq",
 			"revision": "8837942c3e09574accbc5f150e2c5e057189cace",
@@ -63,6 +75,12 @@
 			"revisionTime": "2017-03-22T23:44:13Z"
 		},
 		{
+			"checksumSHA1": "hQcIDtbilIlkJaYhl2faWIFL8uY=",
+			"path": "github.com/mrjones/oauth",
+			"revision": "3f67d9c274355678b2f9844b08d643e2f9213340",
+			"revisionTime": "2017-02-25T17:57:52Z"
+		},
+		{
 			"checksumSHA1": "Se195FlZ160eaEk/uVx4KdTPSxU=",
 			"path": "github.com/pborman/uuid",
 			"revision": "e790cca94e6cc75c7064b1332e63811d4aae1a53",
@@ -79,6 +97,18 @@
 			"path": "github.com/remeh/uuid",
 			"revision": "122b5e90bf63bc76adefe6283396b3a015519c7e",
 			"revisionTime": "2017-07-06T16:55:23Z"
+		},
+		{
+			"checksumSHA1": "vE43s37+4CJ2CDU6TlOUOYE0K9c=",
+			"path": "golang.org/x/crypto/bcrypt",
+			"revision": "9477e0b78b9ac3d0b03822fd95422e2fe07627cd",
+			"revisionTime": "2016-10-31T15:37:30Z"
+		},
+		{
+			"checksumSHA1": "JsJdKXhz87gWenMwBeejTOeNE7k=",
+			"path": "golang.org/x/crypto/blowfish",
+			"revision": "9477e0b78b9ac3d0b03822fd95422e2fe07627cd",
+			"revisionTime": "2016-10-31T15:37:30Z"
 		},
 		{
 			"checksumSHA1": "Sypcm+UJjiKcT7P7kSp87nVuDtI=",
