@@ -102,8 +102,62 @@ func (c GetTwitterToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// set the session cookie and go to the application
 	api.SetSessionCookie(w, u.SessionToken)
 
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "https://twitter.remy.io", http.StatusTemporaryRedirect)
 }
+
+// ----------------------
+
+type DebugSignIn struct{}
+
+func (c DebugSignIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	conf := config.Env()
+	if !conf.Debug {
+		api.RenderBaseJson(w, 403, "route can't be called if not in debug mode")
+		return
+	}
+
+	aapi := GetApi()
+	tu, err := aapi.GetSelf(nil)
+	if err != nil {
+		api.RenderErrJson(w, err)
+		return
+	}
+
+	uid := account.GenTwitterUid(tu.IdStr)
+
+	now := time.Now()
+
+	tok, secr := conf.AccessToken, conf.AccessTokenSecret
+
+	u := &account.User{
+		Uid: uid,
+
+		CreationTime: now,
+		LastLogin:    now,
+
+		TwitterToken:    tok,
+		TwitterSecret:   secr,
+		TwitterId:       tu.IdStr,
+		TwitterName:     tu.Name,
+		TwitterUsername: tu.ScreenName,
+
+		SessionToken: account.RandTok(),
+	}
+
+	if err := account.UserDAO().UpsertOnLogin(u); err != nil {
+		// TODO(remy):!
+		w.WriteHeader(500)
+		log.Error(err)
+		return
+	}
+
+	// set the session cookie and go to the application
+	api.SetSessionCookie(w, u.SessionToken)
+
+	http.Redirect(w, r, "http://localhost:3000", http.StatusTemporaryRedirect)
+}
+
+// ----------------------
 
 func newConsumer() *oauth.Consumer {
 	c := oauth.NewConsumer(
