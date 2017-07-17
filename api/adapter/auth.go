@@ -5,6 +5,7 @@ import (
 
 	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/api"
+	"github.com/remeh/smartwitter/config"
 )
 
 type AuthHandler struct {
@@ -12,6 +13,16 @@ type AuthHandler struct {
 }
 
 func (a AuthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Debug mode
+
+	if config.Env().Debug {
+		sWriter := &StatusWriter{w, 200}
+		a.handler.ServeHTTP(sWriter, r)
+		return
+	}
+
+	// ----------------------
+
 	sc := api.GetSessionCookie(r)
 
 	if len(sc) != 0 {
