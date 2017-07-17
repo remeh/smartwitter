@@ -22,6 +22,11 @@ func GetApi() *anaconda.TwitterApi {
 
 func GetAuthApi(u *account.User) *anaconda.TwitterApi {
 	c := config.Env()
+
+	if c.Debug {
+		return GetApi()
+	}
+
 	anaconda.SetConsumerKey(c.ConsumerKey)
 	anaconda.SetConsumerSecret(c.ConsumerSecret)
 	return anaconda.NewTwitterApi(u.TwitterToken, u.TwitterSecret)

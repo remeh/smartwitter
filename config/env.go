@@ -17,6 +17,8 @@ type Config struct {
 	ListenAddr string
 	PublicDir  string
 
+	Debug bool
+
 	loaded bool
 }
 
@@ -31,6 +33,11 @@ func Env() Config {
 		return c
 	}
 
+	debug := os.Getenv("DEBUG") == "1"
+	if debug {
+		log.Warning("DEBUG DEBUG DEBUG mode !")
+	}
+
 	c = Config{
 		ConsumerKey:       readEnvVar("CONSUMER_KEY", true, ""),
 		ConsumerSecret:    readEnvVar("CONSUMER_SECRET", true, ""),
@@ -40,6 +47,7 @@ func Env() Config {
 		AppUrl:            readEnvVar("APP_URL", false, "http://localhost:3000"),
 		ListenAddr:        readEnvVar("ADDR", false, ":9999"),
 		PublicDir:         readEnvVar("PUBLIC", false, "public/"),
+		Debug:             debug,
 		loaded:            true,
 	}
 
