@@ -20,6 +20,9 @@ class TweetCard extends Component {
       retweeted: this.props.retweeted,
       retweetError: '',
       retweetSuccess: '',
+      ignoring: false,
+      ignoreError: '',
+      ignoreSuccess: '',
     }
   }
 
@@ -73,6 +76,29 @@ class TweetCard extends Component {
     });
   }
 
+  ignore = (event, button, data) => {
+    this.setState({
+      ignoring: true,
+    });
+    let params = {tid: this.props.tweet_id, au: true};
+    XHR.postJson(
+      XHR.domain + '/api/1.0/ignore',
+      params,
+    ).then((json) => {
+        this.setState({
+          ignoring: false,
+          ignoreSuccess: 'Successfully ignored',
+          ignoreError: '',
+        });
+    }).catch((response) => {
+        this.setState({
+          ignoring: false,
+          ignoreSuccess: '',
+          ignoreError: 'Either you\'ve already ignored this tweet, either it\'s not available anymore.',
+        });
+    });
+  }
+
 
   render() {
     return <Container>
@@ -93,6 +119,9 @@ class TweetCard extends Component {
           <Button disabled={this.state.retweeted} loading={this.state.rewteeting} onClick={this.retweet}>
             Retweet
           </Button>
+          <Button loading={this.state.ignoring} onClick={this.ignore}>
+            Ignore
+          </Button>
         </div>
         {this.state.likeSuccess && <Message color='green'>
             {this.state.likeSuccess}
@@ -108,6 +137,14 @@ class TweetCard extends Component {
         }
         {this.state.retweetError && <Message color='red'>
             {this.state.retweetError}
+          </Message>
+        }
+        {this.state.ignoreSuccess && <Message color='green'>
+            {this.state.ignoreSuccess}
+          </Message>
+        }
+        {this.state.ignoreError && <Message color='red'>
+            {this.state.ignoreError}
           </Message>
         }
       </Container>
