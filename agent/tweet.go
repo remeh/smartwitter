@@ -14,7 +14,7 @@ import (
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Minute * 1)
+		after := time.After(time.Minute * 5)
 
 		// ----------------------
 
@@ -38,10 +38,10 @@ func getTweets(ctx context.Context) error {
 	v := url.Values{
 		"tweet_mode":  []string{"extended"},
 		"lang":        []string{"en"},
-		"count":       []string{"30"},
-		"result_type": []string{"recent"},
+		"count":       []string{"50"},
+		"result_type": []string{"mixed"},
 	}
-	sr, err := twitter.GetApi().GetSearch("golang, code", v)
+	sr, err := twitter.GetApi().GetSearch("golang code -filter:retweets", v)
 	if err != nil {
 		return err
 	}
