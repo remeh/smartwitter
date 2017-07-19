@@ -40,7 +40,7 @@ func plannedActions(ctx context.Context) error {
 
 	// find in database some tweets for which it's time to unfav.
 	rows, err := storage.DB().Query(`
-		SELECT "type", "uid", "tweet_id"
+		SELECT "type", "uid", "user_uid", "tweet_id"
 		FROM "twitter_planned_action"
 		WHERE
 			"done" IS NULL
@@ -57,9 +57,9 @@ func plannedActions(ctx context.Context) error {
 
 	for rows.Next() {
 		var typ, tid string
-		var uid uuid.UUID
+		var uid, userUid uuid.UUID
 
-		if err := rows.Scan(&typ, &uid, &tid); err != nil {
+		if err := rows.Scan(&typ, &uid, &userUid, &tid); err != nil {
 			return err
 		}
 
@@ -67,15 +67,19 @@ func plannedActions(ctx context.Context) error {
 
 		switch typ {
 		case "unretweet":
-			action = &twitter.UnRetweet{
+			a := &twitter.UnRetweet{
 				Uid:     uid,
 				TweetId: tid,
 			}
+			a.UserUid = userUid
+			action = a
 		case "unlike":
-			action = &twitter.UnLike{
+			a := &twitter.UnLike{
 				Uid:     uid,
 				TweetId: tid,
 			}
+			a.UserUid = userUid
+			action = a
 		}
 
 		actions = append(actions, action)

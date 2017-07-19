@@ -5,6 +5,7 @@ import (
 
 	"github.com/remeh/smartwitter/log"
 	"github.com/remeh/smartwitter/storage"
+	"github.com/remeh/uuid"
 )
 
 type userDAO struct {
@@ -54,6 +55,30 @@ func (d *userDAO) UpsertOnLogin(u *User) error {
 		return err
 	}
 	return nil
+}
+
+func (d *userDAO) Find(id uuid.UUID) (*User, error) {
+	rv := &User{}
+
+	if err := d.DB.QueryRow(`
+		SELECT "uid", "creation_time", "last_login", "twitter_token", "twitter_secret", "twitter_id", "twitter_name", "twitter_username", "session_token" FROM "user"
+		WHERE
+			"uid" = $1
+		LIMIT 1
+	`, id).Scan(
+		&rv.Uid,
+		&rv.CreationTime,
+		&rv.LastLogin,
+		&rv.TwitterToken,
+		&rv.TwitterSecret,
+		&rv.TwitterId,
+		&rv.TwitterName,
+		&rv.TwitterUsername,
+		&rv.SessionToken); err != nil {
+		return nil, err
+	}
+
+	return rv, nil
 }
 
 func (d *userDAO) FindBySession(sessionToken string) (*User, error) {

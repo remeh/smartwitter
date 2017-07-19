@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/storage"
 	"github.com/remeh/uuid"
 )
@@ -21,7 +22,7 @@ type PlannedAction interface {
 	String() string
 }
 
-type action struct {
+type Action struct {
 	UserUid uuid.UUID
 
 	// Time at which this action has been created
@@ -37,7 +38,7 @@ type UnRetweets []UnRetweet
 type UnRetweet struct {
 	Uid     uuid.UUID
 	TweetId string
-	action
+	Action
 }
 
 func (u *UnRetweet) Do() error {
@@ -46,7 +47,13 @@ func (u *UnRetweet) Do() error {
 		return err
 	}
 
-	_, err = GetApi().UnRetweet(tid, true)
+	var user *account.User
+
+	if user, err = account.UserDAO().Find(u.UserUid); err != nil {
+		return err
+	}
+
+	_, err = GetAuthApi(user).UnRetweet(tid, true)
 	return err
 }
 
@@ -91,7 +98,7 @@ type UnLikes []UnLike
 type UnLike struct {
 	Uid     uuid.UUID
 	TweetId string
-	action
+	Action
 }
 
 func (u *UnLike) Do() error {
@@ -100,7 +107,13 @@ func (u *UnLike) Do() error {
 		return err
 	}
 
-	_, err = GetApi().Unfavorite(tid)
+	var user *account.User
+
+	if user, err = account.UserDAO().Find(u.UserUid); err != nil {
+		return err
+	}
+
+	_, err = GetAuthApi(user).Unfavorite(tid)
 	return err
 }
 
