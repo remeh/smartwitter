@@ -8,6 +8,8 @@ import (
 	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/storage"
 	"github.com/remeh/uuid"
+
+	"github.com/remeh/anaconda"
 )
 
 type PlannedActions []PlannedAction
@@ -54,6 +56,13 @@ func (u *UnRetweet) Do() error {
 	}
 
 	_, err = GetAuthApi(user).UnRetweet(tid, true)
+
+	if err == anaconda.TwitterErrorDoesNotExist ||
+		err == anaconda.TwitterErrorDoesNotExist2 {
+		// if err → 404, it's ok as the tweet doesn't exist anymore
+		err = nil
+	}
+
 	return err
 }
 
@@ -114,6 +123,13 @@ func (u *UnLike) Do() error {
 	}
 
 	_, err = GetAuthApi(user).Unfavorite(tid)
+
+	if err == anaconda.TwitterErrorDoesNotExist ||
+		err == anaconda.TwitterErrorDoesNotExist2 {
+		// if err → 404, it's ok as the tweet doesn't exist anymore
+		err = nil
+	}
+
 	return err
 }
 
