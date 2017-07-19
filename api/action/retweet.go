@@ -75,7 +75,7 @@ func (c Retweet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		unrt.UserUid = user.Uid
 		unrt.CreationTime = now
-		unrt.ExecutionTime = now.Add(time.Hour * 144) // 6 days
+		unrt.ExecutionTime = now.Add(time.Hour * 24) // 1 day
 
 		if err := unrt.Store(); err != nil {
 			api.RenderErrJson(w, err)

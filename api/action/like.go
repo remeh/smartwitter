@@ -77,7 +77,7 @@ func (c Like) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		unlike.UserUid = user.Uid
 		unlike.CreationTime = now
-		unlike.ExecutionTime = now.Add(time.Hour * 144) // 6 days
+		unlike.ExecutionTime = now.Add(time.Hour * 24) // 1 day
 
 		if err := unlike.Store(); err != nil {
 			api.RenderErrJson(w, err)
