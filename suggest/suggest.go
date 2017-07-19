@@ -95,6 +95,8 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 			tda.RetweetTime = rt.Time
 		}
 
+		tda.TweetId = t.TwitterId
+
 		rv = append(rv, t)
 		tdas = append(tdas, tda)
 	}
