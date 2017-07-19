@@ -44,6 +44,7 @@ class SuggestTweets extends Component {
               name={tweet.name}
               screen_name={tweet.screen_name}
               avatar={tweet.avatar}
+              time={tweet.time}
               tweet_id={tweet.tweet_id}
               text={tweet.text}
               link={tweet.link}

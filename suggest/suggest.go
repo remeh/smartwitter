@@ -23,6 +23,7 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 	if rows, err = storage.DB().Query(`
 		select
 			"tweet"."text",
+			"tweet"."twitter_creation_time",
 			"tweet"."twitter_id",
 			"tweet"."retweet_count",
 			"tweet"."favorite_count",
@@ -68,6 +69,7 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 
 		if err := rows.Scan(
 			&t.Text,
+			&t.TwitterCreationTime,
 			&t.TwitterId,
 			&t.RetweetCount,
 			&t.FavoriteCount,

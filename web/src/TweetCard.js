@@ -6,6 +6,7 @@ import {
   Image,
   Message,
 } from 'semantic-ui-react'
+import Moment from 'react-moment';
 import XHR from './xhr.js';
 
 class TweetCard extends Component {
@@ -106,6 +107,7 @@ class TweetCard extends Component {
         <Header size='tiny'>
           <Image src={this.props.avatar} avatar />
           {this.props.name} <span style={{fontSize: '0.8em', color: 'gray'}}>@{this.props.screen_name}</span>
+          <span style={{marginLeft: '1em', fontSize:'0.8em', color: '#999999'}}><Moment fromNow>{this.props.time}</Moment></span>
         </Header>
         <p>
           {this.props.text}
