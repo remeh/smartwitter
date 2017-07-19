@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Menu } from 'semantic-ui-react'
 import { 
   Container,
   Divider,
@@ -32,12 +33,21 @@ class SuggestTweets extends Component {
     });
   }
 
+  signin = () => {
+    document.location = process.env.REACT_APP_API_DOMAIN + '/api/twitter/signin';
+  }
+
   render() {
     return (
       <Container style={{marginTop: '1em'}}>
-        <Header size="large">
-          Suggested Tweets
-        </Header>
+        <Menu secondary>
+          <Menu.Item name='suggested tweets' active={true} />
+          <Menu.Item name='suggested users' />
+          <Menu.Menu position='right'>
+            <Menu.Item name='signin' onClick={this.signin} />
+          </Menu.Menu>
+        </Menu>
+
         {this.state.tweets.map(
           (tweet) => <div key={tweet.uid}>
             <TweetCard

@@ -66,12 +66,14 @@ func declareApiRoutes(s *Server) {
 	// twitter sign in
 	// ----------------------
 
-	s.AddApi("/twitter/signin", log(twitter.RedirectUserToTwitter{}), "GET")
+	if !config.Env().Debug {
+		s.AddApi("/twitter/signin", log(twitter.RedirectUserToTwitter{}), "GET")
+	} else {
+		s.AddApi("/twitter/signin", log(twitter.DebugSignIn{}), "GET")
+	}
 	s.AddApi("/twitter/token", log(twitter.GetTwitterToken{}), "GET", "POST", "PUT")
 
 	// debug route
 	// ----------------------
-	if config.Env().Debug {
-		s.AddApi("/debug/twitter/signin", log(twitter.DebugSignIn{}), "GET")
-	}
+
 }
