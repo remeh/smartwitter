@@ -67,7 +67,8 @@ CREATE TABLE "twitter_user" (
     "description" text NOT NULL,
     "screen_name" text NOT NULL,
     "name" text NOT NULL,
-     "timezone" text NOT NULL,
+    "avatar" text DEFAULT '',
+    "timezone" text NOT NULL,
     "utc_offset" int NOT NULL,
     "followers_count" int default 0,
 

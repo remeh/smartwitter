@@ -46,7 +46,7 @@ func (d *twitterUserDAO) Upsert(tu *TwitterUser) error {
 
 	if _, err := d.DB.Exec(`
 		INSERT INTO "twitter_user" ("uid", "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "avatar", "utc_offset", "followers_count")
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 		ON CONFLICT ("uid") DO UPDATE SET
 			"last_update" = $3,
 			"twitter_id" = $4,
@@ -74,7 +74,7 @@ func (d *twitterUserDAO) Find(id uuid.UUID) (*TwitterUser, error) {
 		SELECT "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "avatar", "utc_offset", "followers_count" FROM "twitter_user"
 		WHERE "uid" = $1
 		LIMIT 1
-	`, id).Scan(&rv.CreationTime, &rv.LastUpdate, &rv.TwitterId, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone, &tu.Avatar, &rv.UtcOffset, &rv.FollowersCount); err != nil {
+	`, id).Scan(&rv.CreationTime, &rv.LastUpdate, &rv.TwitterId, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone, &rv.Avatar, &rv.UtcOffset, &rv.FollowersCount); err != nil {
 		return nil, err
 	}
 	return rv, nil

@@ -3,6 +3,7 @@ package twitter
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/remeh/anaconda"
@@ -53,8 +54,13 @@ func TwitterUserFromTweet(s anaconda.Tweet, now time.Time) *TwitterUser {
 	tu.Name = s.User.Name
 	tu.ScreenName = s.User.ScreenName
 	tu.TimeZone = s.User.TimeZone
-	tu.Avatar = s.User.ProfileImageURL
 	tu.UtcOffset = s.User.UtcOffset
 	tu.FollowersCount = s.User.FollowersCount
+
+	tu.Avatar = s.User.ProfileImageURL
+	if strings.HasPrefix(tu.Avatar, "http:") {
+		tu.Avatar = strings.Replace(tu.Avatar, "http:", "https:", 1)
+	}
+
 	return tu
 }

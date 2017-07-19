@@ -17,7 +17,9 @@ type byKeywordsInfo struct {
 	Uid                  string `json:"uid"`
 	TweetId              string `json:"tweet_id"`
 	Link                 string `json:"link"`
+	Name                 string `json:"name"`
 	ScreenName           string `json:"screen_name"`
+	Avatar               string `json:"avatar"`
 	Text                 string `json:"text"`
 	RetweetCount         int    `json:"retweet_count"`
 	FavoriteCount        int    `json:"favorite_count"`
@@ -78,7 +80,9 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Uid:                  t.Uid().String(),
 			TweetId:              t.TwitterId,
 			Link:                 t.Link,
+			Name:                 tu.Name,
 			ScreenName:           tu.ScreenName,
+			Avatar:               tu.Avatar,
 			Text:                 t.Text,
 			RetweetCount:         t.RetweetCount,
 			FavoriteCount:        t.FavoriteCount,

@@ -125,6 +125,8 @@ func (c DebugSignIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	uid := account.GenTwitterUid(tu.IdStr)
 
+	println("!")
+
 	now := time.Now()
 
 	tok, secr := conf.AccessToken, conf.AccessTokenSecret
