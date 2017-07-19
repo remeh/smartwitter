@@ -44,7 +44,6 @@ func (d *tweetDAO) Upsert(t *Tweet) error {
 		INSERT INTO "tweet" ("uid", "creation_time", "last_update", "twitter_id", "twitter_creation_time", "text", "twitter_user_uid", "retweet_count", "favorite_count", "lang", "keywords", "link")
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		ON CONFLICT ("uid") DO UPDATE SET
-			"creation_time" = $2,
 			"last_update" = $3,
 			"twitter_id" = $4,
 			"twitter_creation_time" = $5,
