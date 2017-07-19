@@ -55,12 +55,12 @@ func (u *UnRetweet) Do() error {
 		return err
 	}
 
-	_, err = GetAuthApi(user).UnRetweet(tid, true)
-
-	if err == anaconda.TwitterErrorDoesNotExist ||
-		err == anaconda.TwitterErrorDoesNotExist2 {
-		// if err → 404, it's ok as the tweet doesn't exist anymore
-		err = nil
+	if _, err = GetAuthApi(user).UnRetweet(tid, true); err != nil {
+		if aerr, ok := err.(*anaconda.ApiError); ok {
+			if aerr.StatusCode == 404 {
+				err = nil
+			}
+		}
 	}
 
 	return err
@@ -122,12 +122,12 @@ func (u *UnLike) Do() error {
 		return err
 	}
 
-	_, err = GetAuthApi(user).Unfavorite(tid)
-
-	if err == anaconda.TwitterErrorDoesNotExist ||
-		err == anaconda.TwitterErrorDoesNotExist2 {
-		// if err → 404, it's ok as the tweet doesn't exist anymore
-		err = nil
+	if _, err = GetAuthApi(user).Unfavorite(tid); err != nil {
+		if aerr, ok := err.(*anaconda.ApiError); ok {
+			if aerr.StatusCode == 404 {
+				err = nil
+			}
+		}
 	}
 
 	return err
