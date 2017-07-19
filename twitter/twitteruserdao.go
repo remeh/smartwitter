@@ -45,7 +45,7 @@ func (d *twitterUserDAO) Upsert(tu *TwitterUser) error {
 	}
 
 	if _, err := d.DB.Exec(`
-		INSERT INTO "twitter_user" ("uid", "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "utc_offset", "followers_count")
+		INSERT INTO "twitter_user" ("uid", "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "avatar", "utc_offset", "followers_count")
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 		ON CONFLICT ("uid") DO UPDATE SET
 			"last_update" = $3,
@@ -54,9 +54,10 @@ func (d *twitterUserDAO) Upsert(tu *TwitterUser) error {
 			"screen_name" = $6,
 			"name" = $7,
 			"timezone" = $8,
-			"utc_offset" = $9,
-			"followers_count" = $10
-	`, tu.Uid(), tu.CreationTime, tu.LastUpdate, tu.TwitterId, tu.Description, tu.ScreenName, tu.Name, tu.TimeZone, tu.UtcOffset, tu.FollowersCount); err != nil {
+			"avatar" = $9,
+			"utc_offset" = $10,
+			"followers_count" = $11
+	`, tu.Uid(), tu.CreationTime, tu.LastUpdate, tu.TwitterId, tu.Description, tu.ScreenName, tu.Name, tu.TimeZone, tu.Avatar, tu.UtcOffset, tu.FollowersCount); err != nil {
 		return err
 	}
 
@@ -70,10 +71,10 @@ func (d *twitterUserDAO) Find(id uuid.UUID) (*TwitterUser, error) {
 
 	rv := &TwitterUser{uid: id}
 	if err := d.DB.QueryRow(`
-		SELECT "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "utc_offset", "followers_count" FROM "twitter_user"
+		SELECT "creation_time", "last_update", "twitter_id", "description", "screen_name", "name", "timezone", "avatar", "utc_offset", "followers_count" FROM "twitter_user"
 		WHERE "uid" = $1
 		LIMIT 1
-	`, id).Scan(&rv.CreationTime, &rv.LastUpdate, &rv.TwitterId, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone, &rv.UtcOffset, &rv.FollowersCount); err != nil {
+	`, id).Scan(&rv.CreationTime, &rv.LastUpdate, &rv.TwitterId, &rv.Description, &rv.ScreenName, &rv.Name, &rv.TimeZone, &tu.Avatar, &rv.UtcOffset, &rv.FollowersCount); err != nil {
 		return nil, err
 	}
 	return rv, nil

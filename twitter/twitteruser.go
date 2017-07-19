@@ -27,6 +27,7 @@ type TwitterUser struct {
 	ScreenName     string
 	Name           string
 	TimeZone       string
+	Avatar         string
 	UtcOffset      int
 	FollowersCount int
 }
@@ -52,6 +53,7 @@ func TwitterUserFromTweet(s anaconda.Tweet, now time.Time) *TwitterUser {
 	tu.Name = s.User.Name
 	tu.ScreenName = s.User.ScreenName
 	tu.TimeZone = s.User.TimeZone
+	tu.Avatar = s.User.ProfileImageURL
 	tu.UtcOffset = s.User.UtcOffset
 	tu.FollowersCount = s.User.FollowersCount
 	return tu
