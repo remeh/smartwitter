@@ -41,7 +41,9 @@ class SuggestTweets extends Component {
         {this.state.tweets.map(
           (tweet) => <div key={tweet.uid}>
             <TweetCard
+              name={tweet.name}
               screen_name={tweet.screen_name}
+              avatar={tweet.avatar}
               tweet_id={tweet.tweet_id}
               text={tweet.text}
               link={tweet.link}

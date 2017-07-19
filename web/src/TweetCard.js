@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   Header,
+  Image,
   Message,
 } from 'semantic-ui-react'
 import XHR from './xhr.js';
@@ -103,7 +104,8 @@ class TweetCard extends Component {
   render() {
     return <Container>
         <Header size='tiny'>
-          {this.props.screen_name}
+          <Image src={this.props.avatar} avatar />
+          {this.props.name} <span style={{fontSize: '0.8em', color: 'gray'}}>@{this.props.screen_name}</span>
         </Header>
         <p>
           {this.props.text}
@@ -116,7 +118,7 @@ class TweetCard extends Component {
           <Button disabled={this.state.liked} loading={this.state.liking} onClick={this.like}>
             Favorite
           </Button>
-          <Button disabled={this.state.retweeted} loading={this.state.rewteeting} onClick={this.retweet}>
+          <Button disabled={this.state.retweeted} loading={this.state.retweeting} onClick={this.retweet}>
             Retweet
           </Button>
           <Button loading={this.state.ignoring} onClick={this.ignore}>
