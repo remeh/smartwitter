@@ -49,7 +49,7 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 			"tweet"."creation_time" > $2
 			and
 			"tweet_done_action"."ignored_time" IS NULL
-		order by (favorite_count+retweet_count+followers_count) desc, "tweet".uid
+		order by (favorite_count+retweet_count) desc, "tweet".uid
 		limit $4;
 	`, pq.Array(keywords), ct, user.Uid, limit); err != nil {
 		return nil, nil, err
