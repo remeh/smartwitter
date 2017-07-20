@@ -58,6 +58,24 @@ CREATE UNIQUE INDEX ON "tweet" ("uid");
 CREATE INDEX ON "tweet" ("twitter_user_uid");
 CREATE INDEX ON "tweet" ("twitter_id");
 
+-- Twitter Keywords Watcher
+
+CREATE TABLE "twitter_keywords_watcher" (
+    "uid" text NOT NULL,
+    "user_uid" text NOT NULL,
+    "position" int NOT NULL DEFAULT 0,
+    "keywords" text NOT NULL,
+
+    "last_run" timestamp with time zone,
+
+    "creation_time" timestamp with time zone NOT NULL DEFAULT now(),
+    "last_update" timestamp with time zone NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX ON "twitter_keywords_watcher" ("uid")
+CREATE INDEX ON "twitter_keywords_watcher" ("user_uid");
+ALTER TABLE "twitter_keywords_watcher" ADD CONSTRAINT tkw_user FOREIGN KEY ("user_uid") REFERENCES "user" ("uid") MATCH FULL;
+
 -- Twitter user
 
 CREATE TABLE "twitter_user" (
@@ -96,6 +114,8 @@ CREATE TABLE "twitter_planned_action" (
     "done" timestamp with time zone DEFAULT NULL
 );
 
+ALTER TABLE "twitter_planned_action" ADD CONSTRAINT tpa_user FOREIGN KEY ("user_uid") REFERENCES "user" ("uid") MATCH FULL;
+
 -- Tweet State
 
 CREATE TABLE "tweet_done_action" (
@@ -108,6 +128,7 @@ CREATE TABLE "tweet_done_action" (
 
 CREATE UNIQUE INDEX ON "tweet_done_action" ("user_uid", "tweet_id");
 CREATE INDEX ON "tweet_done_action" ("tweet_id");
+ALTER TABLE "tweet_done_action" ADD CONSTRAINT tda_user FOREIGN KEY ("user_uid") REFERENCES "user" ("uid") MATCH FULL;
 
 ----------------------
 -- DB Schema

@@ -8,6 +8,7 @@ import (
 
 	"github.com/remeh/smartwitter/log"
 	"github.com/remeh/smartwitter/twitter"
+	"github.com/remeh/uuid"
 )
 
 // GetTweets launches a crawler session.
@@ -21,9 +22,17 @@ func GetTweets(ctx context.Context) {
 		select {
 		case <-after:
 			log.Debug("GetTweets is starting.")
-			if err := getTweets(ctx); err != nil {
+
+			k, err := getNextKeywords()
+			if err != nil {
+				log.Error("GetTweets: getNextKeywords:", err)
+				continue
+			}
+
+			if err = getTweets(ctx, k); err != nil {
 				log.Error("while running GetTweets:", err)
 			}
+
 			log.Debug("GetTweets is ending.")
 		case <-ctx.Done():
 			log.Debug("GetTweets canceled.")
@@ -34,13 +43,25 @@ func GetTweets(ctx context.Context) {
 
 // ----------------------
 
-func getTweets(ctx context.Context) error {
+type keywordsToSearch struct {
+	Uid      uuid.UUID
+	UserUid  uuid.UUID
+	Keywords string
+}
+
+func getNextKeywords() (keywordsToSearch, error) {
+	// TODO(remy):
+	return keywordsToSearch{}, nil
+}
+
+func getTweets(ctx context.Context, k keywordsToSearch) error {
 	v := url.Values{
 		"tweet_mode":  []string{"extended"},
 		"lang":        []string{"en"},
 		"count":       []string{"50"},
 		"result_type": []string{"mixed"},
 	}
+
 	sr, err := twitter.GetApi().GetSearch("golang code -filter:retweets", v)
 	if err != nil {
 		return err
