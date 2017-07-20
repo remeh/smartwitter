@@ -23,7 +23,7 @@ type byKeywordsInfo struct {
 	Time                 time.Time `json:"time"`
 	Text                 string    `json:"text"`
 	RetweetCount         int       `json:"retweet_count"`
-	FavoriteCount        int       `json:"favorite_count"`
+	LikeCount            int       `json:"like_count"`
 	TwitterUserFollowers int       `json:"twitter_user_followers"`
 	Ignored              bool      `json:"ignored"`
 	Liked                bool      `json:"liked"`
@@ -87,7 +87,7 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Time:                 t.TwitterCreationTime,
 			Text:                 t.Text,
 			RetweetCount:         t.RetweetCount,
-			FavoriteCount:        t.FavoriteCount,
+			LikeCount:            t.FavoriteCount,
 			TwitterUserFollowers: tu.FollowersCount,
 			Ignored:              tda.Ignored,
 			Liked:                tda.Liked,

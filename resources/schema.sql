@@ -67,7 +67,7 @@ CREATE TABLE "twitter_user" (
     "description" text NOT NULL,
     "screen_name" text NOT NULL,
     "name" text NOT NULL,
-    "avatar" text DEFAULT '',
+    "avatar" text DEFAULT 'https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png',
     "timezone" text NOT NULL,
     "utc_offset" int NOT NULL,
     "followers_count" int default 0,

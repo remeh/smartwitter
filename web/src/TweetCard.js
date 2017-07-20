@@ -5,6 +5,7 @@ import {
   Header,
   Image,
   Message,
+  Statistic,
 } from 'semantic-ui-react'
 import Moment from 'react-moment';
 import XHR from './xhr.js';
@@ -116,7 +117,11 @@ class TweetCard extends Component {
           <a href={this.props.link}>{this.props.link}</a>
         </p>
         <p>{this.state.tweet_id}</p>
-        <div>
+        <Container>
+          <Statistic size='mini' label='Retweets' value={this.props.retweet_count} />
+          <Statistic size='mini' label='Likes' value={this.props.like_count} />
+        </Container>
+        <Container>
           <Button disabled={this.state.liked} loading={this.state.liking} onClick={this.like}>
             Favorite
           </Button>
@@ -126,7 +131,7 @@ class TweetCard extends Component {
           <Button loading={this.state.ignoring} onClick={this.ignore}>
             Ignore
           </Button>
-        </div>
+        </Container>
         {this.state.likeSuccess && <Message color='green'>
             {this.state.likeSuccess}
           </Message>

@@ -3,7 +3,6 @@ import { Menu } from 'semantic-ui-react'
 import { 
   Container,
   Divider,
-  Header,
 } from 'semantic-ui-react'
 import XHR from './xhr.js';
 import TweetCard from './TweetCard.js';
@@ -44,7 +43,7 @@ class SuggestTweets extends Component {
           <Menu.Item name='suggested tweets' active={true} />
           <Menu.Item name='suggested users' />
           <Menu.Menu position='right'>
-            <Menu.Item name='signin' onClick={this.signin} />
+            <Menu.Item name='sign in' onClick={this.signin} />
           </Menu.Menu>
         </Menu>
 
@@ -60,6 +59,8 @@ class SuggestTweets extends Component {
               link={tweet.link}
               retweeted={tweet.retweeted}
               liked={tweet.liked}
+              like_count={tweet.like_count}
+              retweet_count={tweet.retweet_count}
             />
             <Divider />
           </div>
