@@ -40,9 +40,10 @@ func ReadJsonBody(r *http.Request, object interface{}) error {
 func SetSessionCookie(w http.ResponseWriter, val string) {
 	c := &http.Cookie{
 		// TODO(remy): cookie options
-		Name:  sessionCookie,
-		Value: val,
-		Path:  "/api",
+		Name:   sessionCookie,
+		Value:  val,
+		Path:   "/api",
+		MaxAge: 2592000,
 	}
 	http.SetCookie(w, c)
 }
