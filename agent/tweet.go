@@ -21,14 +21,14 @@ var (
 	// Do not crawl too many times the keywords.
 	// For each keywords, this time should be elapsed
 	// to be crawled again.
-	MinIntervalBetweenGetTweets = "2 minutes"
+	MinIntervalBetweenGetTweets = "5 minutes"
 )
 
 // GetTweets launches a crawler session.
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Second * 5)
+		after := time.After(time.Second * 30)
 
 		// ----------------------
 
