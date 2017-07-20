@@ -64,7 +64,7 @@ CREATE TABLE "twitter_keywords_watcher" (
     "uid" text NOT NULL,
     "user_uid" text NOT NULL,
     "position" int NOT NULL DEFAULT 0,
-    "keywords" text NOT NULL,
+    "keywords" text[] NOT NULL DEFAULT array[]::text[],
 
     "last_run" timestamp with time zone,
 
@@ -72,7 +72,7 @@ CREATE TABLE "twitter_keywords_watcher" (
     "last_update" timestamp with time zone NOT NULL DEFAULT now()
 );
 
-CREATE UNIQUE INDEX ON "twitter_keywords_watcher" ("uid")
+CREATE UNIQUE INDEX ON "twitter_keywords_watcher" ("uid");
 CREATE INDEX ON "twitter_keywords_watcher" ("user_uid");
 ALTER TABLE "twitter_keywords_watcher" ADD CONSTRAINT tkw_user FOREIGN KEY ("user_uid") REFERENCES "user" ("uid") MATCH FULL;
 
