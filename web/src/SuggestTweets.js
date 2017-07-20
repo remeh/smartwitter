@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Menu } from 'semantic-ui-react'
-import { 
+import {
   Container,
   Divider,
+  Input,
 } from 'semantic-ui-react'
 import XHR from './xhr.js';
 import TweetCard from './TweetCard.js';
@@ -12,8 +13,12 @@ class SuggestTweets extends Component {
   constructor(props) {
     super(props);
 
+    this.refreshTimeout = null;
+
     this.state = {
       tweets: [],
+      keywords: 'golang',
+      loading: false,
     }
 
     this.fetch();
@@ -21,19 +26,37 @@ class SuggestTweets extends Component {
 
   fetch() {
     var params = {
-      k: 'golang',
+      k: this.state.keywords,
     };
     XHR.getJson(
       XHR.domain + '/api/1.0/suggest',
       params,
     ).then((json) => {
-      this.setState({tweets: json});
+      this.setState({
+        tweets: json,
+        loading: false,
+      });
     }).catch((response) => {
+      this.setState({
+        loading: false,
+      });
     });
   }
 
   signin = () => {
     document.location = process.env.REACT_APP_API_DOMAIN + '/api/twitter/signin';
+  }
+
+  onChangeKeywords = (event, data) => {
+    this.setState({
+      keywords: data.value,
+      loading: true,
+    });
+    if (this.refreshTimeout) {
+      clearTimeout(this.refreshTimeout);
+      this.refreshTimeout = null;
+    }
+    this.refreshTimeout = setTimeout(() => this.fetch(), 500);
   }
 
   render() {
@@ -46,6 +69,10 @@ class SuggestTweets extends Component {
             <Menu.Item name='sign in' onClick={this.signin} />
           </Menu.Menu>
         </Menu>
+
+        <Container style={{margin: '1em'}}>
+          <Input loading={this.state.loading} onChange={this.onChangeKeywords} />
+        </Container>
 
         {this.state.tweets.map(
           (tweet) => <div key={tweet.uid}>
