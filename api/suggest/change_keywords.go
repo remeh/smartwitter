@@ -2,7 +2,7 @@ package suggest
 
 import (
 	"net/http"
-	"time"
+	"strconv"
 
 	"github.com/remeh/smartwitter/account"
 	"github.com/remeh/smartwitter/api"
@@ -12,6 +12,7 @@ import (
 type ChangeKeywords struct{}
 
 func (c ChangeKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
 	// user
 	// ----------------------
 
@@ -31,7 +32,7 @@ func (c ChangeKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	keywords := api.Escape(r.Form["k"])
-	pposition := api.Escape(r.Form.Get("p"))
+	pposition := api.EscapeOne(r.Form.Get("p"))
 	position, err := strconv.Atoi(pposition)
 	if err != nil || position < 0 {
 		api.RenderBadParameter(w, "p")
@@ -41,4 +42,8 @@ func (c ChangeKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// set the keywords
 	// ----------------------
 
+	if err := suggest.SetKeywords(user.Uid, keywords, position); err != nil {
+		api.RenderErrJson(w, err)
+		return
+	}
 }

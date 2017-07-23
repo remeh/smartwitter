@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Menu } from 'semantic-ui-react'
 import {
   Container,
   Divider,
@@ -43,10 +42,6 @@ class SuggestTweets extends Component {
     });
   }
 
-  signin = () => {
-    document.location = process.env.REACT_APP_API_DOMAIN + '/api/twitter/signin';
-  }
-
   onChangeKeywords = (event, data) => {
     this.setState({
       keywords: data.value,
@@ -59,17 +54,12 @@ class SuggestTweets extends Component {
     this.refreshTimeout = setTimeout(() => this.fetch(), 500);
   }
 
+  onClickSettings = (event) => {
+  }
+
   render() {
     return (
       <Container style={{marginTop: '1em'}}>
-        <Menu secondary>
-          <Menu.Item name='suggested tweets' active={true} />
-          <Menu.Item name='suggested users' />
-          <Menu.Menu position='right'>
-            <Menu.Item name='sign in' onClick={this.signin} />
-          </Menu.Menu>
-        </Menu>
-
         <Container style={{margin: '1em'}}>
           <Input loading={this.state.loading} onChange={this.onChangeKeywords} />
         </Container>
