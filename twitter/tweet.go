@@ -14,6 +14,125 @@ var (
 	tweetIdSpace = uuid.UUID("139866bf-4932-4039-91f1-c8c4a5994837")
 )
 
+// Tweet Entities
+// ----------------------
+
+type TweetEntities []TweetEntity
+
+type TweetEntity struct {
+	Type          TweetEntityType `json:"type"`
+	DisplayUrl    string          `json:"display_url"`
+	Url           string          `json:"url"`
+	Indices       []int           `json:"indices"`
+	ScreenName    string          `json:"screen_name"`
+	UserName      string          `json:"user_name"`
+	UserTwitterId string          `json:"user_twitter_id"`
+	Hashtag       string          `json:"hashtag"`
+}
+
+type TweetEntityType string
+
+const (
+	Media       TweetEntityType = "media"
+	Hashtag     TweetEntityType = "hashtag"
+	Url         TweetEntityType = "url"
+	UserMention TweetEntityType = "user_mention"
+)
+
+func (t TweetEntities) Types() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, string(ent.Type))
+	}
+	return rv
+}
+
+func (t TweetEntities) DisplayUrls() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, ent.DisplayUrl)
+	}
+	return rv
+}
+
+func (t TweetEntities) Urls() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, ent.Url)
+	}
+	return rv
+}
+
+func (t TweetEntities) Indices() ([]int, []int) {
+	if t == nil {
+		return nil, nil
+	}
+	rvs, rve := make([]int, 0), make([]int, 0)
+	for _, ent := range t {
+		if len(ent.Indices) == 2 {
+			rvs = append(rvs, ent.Indices[0])
+			rve = append(rve, ent.Indices[1])
+		}
+	}
+	return rvs, rve
+}
+
+func (t TweetEntities) ScreenNames() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, ent.ScreenName)
+	}
+	return rv
+}
+
+func (t TweetEntities) UserNames() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, ent.UserName)
+	}
+	return rv
+}
+
+func (t TweetEntities) UserTwitterIds() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, ent.UserTwitterId)
+	}
+	return rv
+}
+
+func (t TweetEntities) Hashtags() []string {
+	if t == nil {
+		return nil
+	}
+	rv := make([]string, 0)
+	for _, ent := range t {
+		rv = append(rv, ent.Hashtag)
+	}
+	return rv
+}
+
+// Tweets
+// ----------------------
+
 type Tweets []Tweet
 
 type Tweet struct {
@@ -34,6 +153,8 @@ type Tweet struct {
 	TwitterUserUid      uuid.UUID `json:"-"`
 	// keywords having found this tweet
 	Keywords []string `json:"-"`
+
+	Entities TweetEntities `json:"entities"`
 }
 
 func (t Tweet) Uid() uuid.UUID {
@@ -68,6 +189,7 @@ func TweetFromTweet(t anaconda.Tweet, now time.Time, keywords []string) *Tweet {
 	if rv.TwitterCreationTime, err = t.CreatedAtTime(); err != nil {
 		log.Warning("getTweets: getting tweet creation time:", err)
 	}
+
 	rv.CreationTime = now
 	rv.LastUpdate = now
 	rv.Text = t.FullText
@@ -76,5 +198,48 @@ func TweetFromTweet(t anaconda.Tweet, now time.Time, keywords []string) *Tweet {
 	rv.Lang = t.Lang
 	rv.Keywords = keywords
 	rv.Link = fmt.Sprintf("https://twitter.com/%s/status/%s", t.User.ScreenName, tid)
+
+	// Entities
+	// ----------------------
+
+	ents := make(TweetEntities, 0)
+
+	for _, h := range t.Entities.Hashtags {
+		ents = append(ents, TweetEntity{
+			Type:    Hashtag,
+			Indices: h.Indices[:],
+		})
+	}
+
+	for _, m := range t.Entities.Media {
+		ents = append(ents, TweetEntity{
+			Type:       Media,
+			DisplayUrl: m.Display_url,
+			Url:        m.Media_url_https,
+			Indices:    m.Indices[:],
+		})
+	}
+
+	for _, um := range t.Entities.User_mentions {
+		ents = append(ents, TweetEntity{
+			Type:          UserMention,
+			UserName:      um.Name,
+			ScreenName:    um.Screen_name,
+			Indices:       um.Indices[:],
+			UserTwitterId: um.Id_str,
+		})
+	}
+
+	for _, u := range t.Entities.Urls {
+		ents = append(ents, TweetEntity{
+			Type:       Url,
+			DisplayUrl: u.Display_url,
+			Url:        u.Expanded_url,
+			Indices:    u.Indices[:],
+		})
+	}
+
+	rv.Entities = ents
+
 	return rv
 }

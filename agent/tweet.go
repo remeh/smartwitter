@@ -120,8 +120,8 @@ func getTweets(ctx context.Context, k *keywordsToSearch) error {
 
 	v := url.Values{
 		"tweet_mode":  []string{"extended"},
-		"lang":        []string{"en"},
-		"count":       []string{"50"},
+		"lang":        []string{"en"}, // TODO(remy): user language
+		"count":       []string{"25"},
 		"result_type": []string{"mixed"},
 	}
 

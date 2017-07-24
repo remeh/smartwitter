@@ -49,6 +49,18 @@ CREATE TABLE "tweet" (
     "link" text default 'https://twitter.com',
     "keywords" text[] default array[]::text[],
 
+    -- entities
+
+    "entities_type" text[] default NULL,
+    "entities_display_url" text[] default NULL,
+    "entities_url" text[] default NULL,
+    "entities_idx_start" int[] default NULL,
+    "entities_idx_end" int[] default NULL,
+    "entities_screen_name" text[] default NULL,
+    "entities_user_name" text[] default NULL,
+    "entities_user_id" text[] default NULL,
+    "entities_hashtag" text[] default NULL,
+
     -- time
     "creation_time" timestamp with time zone NOT NULL DEFAULT now(),
     "last_update" timestamp with time zone NOT NULL DEFAULT now()
