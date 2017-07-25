@@ -20,14 +20,14 @@ var (
 type TweetEntities []TweetEntity
 
 type TweetEntity struct {
-	Type          TweetEntityType `json:"type"`
-	DisplayUrl    string          `json:"display_url"`
-	Url           string          `json:"url"`
-	Indices       []int           `json:"indices"`
-	ScreenName    string          `json:"screen_name"`
-	UserName      string          `json:"user_name"`
-	UserTwitterId string          `json:"user_twitter_id"`
-	Hashtag       string          `json:"hashtag"`
+	Type          TweetEntityType `json:"type,omitempty"`
+	DisplayUrl    string          `json:"display_url,omitempty"`
+	Url           string          `json:"url,omitempty"`
+	Indices       []int           `json:"indices,omitempty"`
+	ScreenName    string          `json:"screen_name,omitempty"`
+	UserName      string          `json:"user_name,omitempty"`
+	UserTwitterId string          `json:"user_twitter_id,omitempty"`
+	Hashtag       string          `json:"hashtag,omitempty"`
 }
 
 type TweetEntityType string
@@ -38,6 +38,37 @@ const (
 	Url         TweetEntityType = "url"
 	UserMention TweetEntityType = "user_mention"
 )
+
+func ToTweetEntities(types, displayUrls, urls []string, idxStarts, idxEnds []int64, screenNames, userNames, userTwitterIds, hashtags []string) TweetEntities {
+	if len(types) != len(displayUrls) ||
+		len(types) != len(urls) ||
+		len(types) != len(idxStarts) ||
+		len(types) != len(idxEnds) ||
+		len(types) != len(screenNames) ||
+		len(types) != len(userNames) ||
+		len(types) != len(userTwitterIds) ||
+		len(types) != len(hashtags) {
+		log.Error("ToTweetEntities: one of the slices isn't of the good size.")
+		return make(TweetEntities, 0)
+	}
+
+	rv := make(TweetEntities, len(types))
+
+	for i := range types {
+		rv[i] = TweetEntity{
+			Type:          TweetEntityType(types[i]),
+			DisplayUrl:    displayUrls[i],
+			Url:           urls[i],
+			Indices:       []int{int(idxStarts[i]), int(idxEnds[i])},
+			ScreenName:    screenNames[i],
+			UserName:      userNames[i],
+			UserTwitterId: userTwitterIds[i],
+			Hashtag:       hashtags[i],
+		}
+	}
+
+	return rv
+}
 
 func (t TweetEntities) Types() []string {
 	if t == nil {

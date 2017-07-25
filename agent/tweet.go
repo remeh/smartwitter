@@ -28,7 +28,7 @@ var (
 // TODO(remy): better doc
 func GetTweets(ctx context.Context) {
 	for {
-		after := time.After(time.Second * 30)
+		after := time.After(time.Second * 1)
 
 		// ----------------------
 

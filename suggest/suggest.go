@@ -29,6 +29,15 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 			"tweet"."favorite_count",
 			"tweet"."link",
 			"tweet"."twitter_user_uid",
+			"tweet"."entities_type",
+			"tweet"."entities_display_url",
+			"tweet"."entities_url",
+			"tweet"."entities_idx_start",
+			"tweet"."entities_idx_end",
+			"tweet"."entities_screen_name",
+			"tweet"."entities_user_name",
+			"tweet"."entities_user_id",
+			"tweet"."entities_hashtag",
 			"tweet_done_action"."ignored_time",
 			"tweet_done_action"."liked_time",
 			"tweet_done_action"."retweeted_time",
@@ -66,6 +75,9 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 		tda := twitter.TweetDoneAction{}
 
 		var it, lt, rt pq.NullTime
+		var types, displayUrls, urls, screenNames,
+			userNames, userIds, hashtags []string
+		var idxStarts, idxEnds []int64
 
 		if err := rows.Scan(
 			&t.Text,
@@ -75,6 +87,15 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 			&t.FavoriteCount,
 			&t.Link,
 			&t.TwitterUserUid,
+			pq.Array(&types),
+			pq.Array(&displayUrls),
+			pq.Array(&urls),
+			pq.Array(&idxStarts),
+			pq.Array(&idxEnds),
+			pq.Array(&screenNames),
+			pq.Array(&userNames),
+			pq.Array(&userIds),
+			pq.Array(&hashtags),
 			&it,
 			&lt,
 			&rt,
@@ -94,6 +115,18 @@ func SuggestByKeywords(user *account.User, keywords []string, duration time.Dura
 		if rt.Valid {
 			tda.RetweetTime = rt.Time
 		}
+
+		t.Entities = twitter.ToTweetEntities(
+			types,
+			displayUrls,
+			urls,
+			idxStarts,
+			idxEnds,
+			screenNames,
+			userNames,
+			userIds,
+			hashtags,
+		)
 
 		tda.TweetId = t.TwitterId
 
