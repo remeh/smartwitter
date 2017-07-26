@@ -72,6 +72,7 @@ class SuggestTweets extends Component {
               time={tweet.time}
               tweet_id={tweet.tweet_id}
               text={tweet.text}
+              entities={tweet.entities}
               link={tweet.link}
               retweeted={tweet.retweeted}
               liked={tweet.liked}

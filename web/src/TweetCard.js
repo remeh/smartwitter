@@ -11,6 +11,7 @@ import {
   Statistic,
 } from 'semantic-ui-react'
 import Moment from 'react-moment';
+import TweetText from './TweetText.js';
 import XHR from './xhr.js';
 
 class TweetCard extends Component {
@@ -113,7 +114,7 @@ class TweetCard extends Component {
   }
 
   render() {
-    return <Card fluid padded>
+    return <Card fluid>
         <Card.Content>
           <Grid doubling columns="equal">
             <Grid.Column width={15}>
@@ -128,9 +129,7 @@ class TweetCard extends Component {
               </Button>
             </Grid.Column>
           </Grid>
-          <p>
-            {this.props.text}
-          </p>
+          <TweetText text={this.props.text} entities={this.props.entities} />
           <p>
             <a href={this.props.link}>{this.props.link}</a>
           </p>
@@ -154,7 +153,7 @@ class TweetCard extends Component {
               </Button>
             </Grid.Column>
             <Grid.Column width={8}>
-              <Checkbox toggle checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
+              <Checkbox checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
             </Grid.Column>
           </Grid>
           {this.state.likeSuccess && <Message color='green'>

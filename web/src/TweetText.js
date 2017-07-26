@@ -4,38 +4,62 @@ class TweetText extends Component {
   constructor(props) {
     super(props);
 
-    let text = this.props.text;
+    let tags = this.format(this.props.text);
 
+    this.state = {
+      content: tags,
+    }
+  }
+
+  format = (text) => {
+
+    // no entities? directly return the text.
+    if (this.props.entities.length === 0) {
+      return [<span>text</span>];
+    }
+
+    let tags = [];
+    let idx = 0;
     for (let i = 0; i < this.props.entities.length; i++) {
-      let entity = props.entities[i];
+      let entity = this.props.entities[i];
+      if (entity.indices[0] !== idx) {
+        let substr = text.substring(idx, entity.indices[0]);
+        tags.push(<span key={Math.random()}>{substr}</span>);
+        idx = entity.indices[0];
+      }
 
       switch (entity.type) {
       case 'hashtag':
-        text = this.hashtag(text, entity);
+        tags.push(this.hashtag(this.props.text, entity));
+        idx = entity.indices[1];
         break;
       default:
         break;
       }
     }
 
-    this.state = {
-      text: text,
+    // end of text without entity
+    // ----------------------
+    let lastEnt = this.props.entities[this.props.entities.length-1];
+    if (lastEnt.indices[1] != text.length) {
+      let substr = text.substring(lastEnt.indices[1]);
+      tags.push(<span key={Math.random()}>{substr}</span>);
     }
+
+    return tags;
   }
 
   hashtag = (text, entity) => {
-    console.log(text);
-    //let before = <span>{text.slice(0, +entity.indices[0])}</span>
-    let after = <span>{text.slice(+entity.indices[1], 0)}</span>
-    //let ht = <a href={'https://twitter.com'}>{text.substring(+entity.indices[0], +entity.indices[1])}</a>
-    return after;
+    let ht = text.substring(+entity.indices[0], +entity.indices[1]);
+    let url = 'https://twitter.com/'+ht;
+    return <span key={Math.random()}><a href={url}>{ht}</a> </span>
   }
 
   render() {
     return (
-      <p>
-        {this.state.text}
-      </p>
+      <div>
+        {this.state.content}
+      </div>
     );
   }
 }

@@ -2,6 +2,7 @@ package twitter
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"time"
 
@@ -18,6 +19,10 @@ var (
 // ----------------------
 
 type TweetEntities []TweetEntity
+
+func (te TweetEntities) Len() int               { return len(te) }
+func (te TweetEntities) Swap(i int, j int)      { te[i], te[j] = te[j], te[i] }
+func (te TweetEntities) Less(i int, j int) bool { return te[i].Indices[0] < te[j].Indices[0] }
 
 type TweetEntity struct {
 	Type          TweetEntityType `json:"type,omitempty"`
@@ -66,6 +71,8 @@ func ToTweetEntities(types, displayUrls, urls []string, idxStarts, idxEnds []int
 			Hashtag:       hashtags[i],
 		}
 	}
+
+	sort.Sort(rv)
 
 	return rv
 }
