@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Container,
   Divider,
+  Header,
   Input,
 } from 'semantic-ui-react'
 import XHR from './xhr.js';
@@ -54,14 +55,12 @@ class SuggestTweets extends Component {
     this.refreshTimeout = setTimeout(() => this.fetch(), 500);
   }
 
-  onClickSettings = (event) => {
-  }
-
   render() {
     return (
       <Container style={{marginTop: '1em'}}>
         <Container style={{margin: '1em'}}>
-          <Input loading={this.state.loading} onChange={this.onChangeKeywords} />
+          <Header>Keywords</Header>
+          <Input loading={this.state.loading} placeholder='golang' onChange={this.onChangeKeywords} />
         </Container>
 
         {this.state.tweets.map(

@@ -21,7 +21,7 @@ class App extends Component {
     return (
       <Router>
         <Container>
-          <Menu secondary>
+          <Menu pointing secondary>
             <Menu.Item as={NavLink} exact={true} to='/' activeClassName='active'>
               Suggested Tweets
             </Menu.Item>
