@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import {
   Button,
-  Container,
+  Checkbox,
+  Card,
   Header,
+  Grid,
+  Icon,
   Image,
   Message,
   Statistic,
@@ -15,6 +18,7 @@ class TweetCard extends Component {
     super(props);
 
     this.state = {
+      autoundo: true,
       liking: false,
       liked: this.props.liked,
       likeError: '',
@@ -33,7 +37,7 @@ class TweetCard extends Component {
     this.setState({
       liking: true,
     });
-    let params = {tid: this.props.tweet_id, au: true};
+    let params = {tid: this.props.tweet_id, au: this.state.autoundo};
     XHR.postJson(
       XHR.domain + '/api/1.0/like',
       params,
@@ -58,7 +62,7 @@ class TweetCard extends Component {
     this.setState({
       retweeting: true,
     });
-    let params = {tid: this.props.tweet_id, au: true};
+    let params = {tid: this.props.tweet_id, au: this.state.autoundo};
     XHR.postJson(
       XHR.domain + '/api/1.0/retweet',
       params,
@@ -102,61 +106,83 @@ class TweetCard extends Component {
     });
   }
 
+  toggleAutoundo = () => {
+    this.setState({
+      autoundo: !this.state.autoundo,
+    });
+  }
 
   render() {
-    return <Container>
-        <Header size='tiny'>
-          <Image src={this.props.avatar} avatar />
-          {this.props.name} <span style={{fontSize: '0.8em', color: 'gray'}}>@{this.props.screen_name}</span>
-          <span style={{marginLeft: '1em', fontSize:'0.8em', color: '#999999'}}><Moment fromNow>{this.props.time}</Moment></span>
-        </Header>
-        <p>
-          {this.props.text}
-        </p>
-        <p>
-          <a href={this.props.link}>{this.props.link}</a>
-        </p>
-        <p>{this.state.tweet_id}</p>
-        <Container>
-          <Statistic size='mini' label='Retweets' value={this.props.retweet_count} />
-          <Statistic size='mini' label='Likes' value={this.props.like_count} />
-        </Container>
-        <Container>
-          <Button disabled={this.state.liked} loading={this.state.liking} onClick={this.like}>
-            Favorite
-          </Button>
-          <Button disabled={this.state.retweeted} loading={this.state.retweeting} onClick={this.retweet}>
-            Retweet
-          </Button>
-          <Button loading={this.state.ignoring} onClick={this.ignore}>
-            Ignore
-          </Button>
-        </Container>
-        {this.state.likeSuccess && <Message color='green'>
-            {this.state.likeSuccess}
-          </Message>
-        }
-        {this.state.likeError && <Message color='red'>
-            {this.state.likeError}
-          </Message>
-        }
-        {this.state.retweetSuccess && <Message color='green'>
-            {this.state.retweetSuccess}
-          </Message>
-        }
-        {this.state.retweetError && <Message color='red'>
-            {this.state.retweetError}
-          </Message>
-        }
-        {this.state.ignoreSuccess && <Message color='green'>
-            {this.state.ignoreSuccess}
-          </Message>
-        }
-        {this.state.ignoreError && <Message color='red'>
-            {this.state.ignoreError}
-          </Message>
-        }
-      </Container>
+    return <Card fluid padded>
+        <Card.Content>
+          <Grid doubling columns="equal">
+            <Grid.Column width={15}>
+              <Header size='tiny'> <Image src={this.props.avatar} avatar />
+                {this.props.name} <span style={{fontSize: '0.8em', color: 'gray'}}>@{this.props.screen_name}</span>
+                <span style={{marginLeft: '1em', fontSize:'0.8em', color: '#999999'}}><Moment fromNow>{this.props.time}</Moment></span>
+              </Header>
+            </Grid.Column>
+            <Grid.Column>
+              <Button basic icon loading={this.state.ignoring} onClick={this.ignore}>
+                <Icon name="close" />
+              </Button>
+            </Grid.Column>
+          </Grid>
+          <p>
+            {this.props.text}
+          </p>
+          <p>
+            <a href={this.props.link}>{this.props.link}</a>
+          </p>
+        </Card.Content>
+        <Card.Content extra>
+          <Grid stackable doubling>
+            <Grid.Column width={2}>
+              <Statistic size='mini' label='Retweets' value={this.props.retweet_count} />
+            </Grid.Column>
+            <Grid.Column width={2}>
+              <Statistic size='mini' label='Likes' value={this.props.like_count} />
+            </Grid.Column>
+            <Grid.Column width={2}>
+              <Button disabled={this.state.liked} loading={this.state.liking} onClick={this.like}>
+                Favorite
+              </Button>
+            </Grid.Column>
+            <Grid.Column width={2}>
+              <Button disabled={this.state.retweeted} loading={this.state.retweeting} onClick={this.retweet}>
+                Retweet
+              </Button>
+            </Grid.Column>
+            <Grid.Column width={8}>
+              <Checkbox toggle checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
+            </Grid.Column>
+          </Grid>
+          {this.state.likeSuccess && <Message color='green'>
+              {this.state.likeSuccess}
+            </Message>
+          }
+          {this.state.likeError && <Message color='red'>
+              {this.state.likeError}
+            </Message>
+          }
+          {this.state.retweetSuccess && <Message color='green'>
+              {this.state.retweetSuccess}
+            </Message>
+          }
+          {this.state.retweetError && <Message color='red'>
+              {this.state.retweetError}
+            </Message>
+          }
+          {this.state.ignoreSuccess && <Message color='green'>
+              {this.state.ignoreSuccess}
+            </Message>
+          }
+          {this.state.ignoreError && <Message color='red'>
+              {this.state.ignoreError}
+            </Message>
+          }
+        </Card.Content>
+      </Card>
   }
 }
 
