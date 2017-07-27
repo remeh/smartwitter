@@ -31,7 +31,19 @@ class TweetCard extends Component {
       ignoring: false,
       ignoreError: '',
       ignoreSuccess: '',
+      images: this.imagesInTweet(),
     }
+  }
+
+  imagesInTweet = () => {
+    let rv = [];
+    for (let i in this.props.entities) {
+      let entity = this.props.entities[i];
+      if (entity.type == 'media') {
+        rv.push(entity.url);
+      }
+    }
+    return rv;
   }
 
   like = (event, button, data) => {
@@ -120,7 +132,7 @@ class TweetCard extends Component {
             <Grid.Column width={15}>
               <Header size='tiny'> <Image src={this.props.avatar} avatar />
                 {this.props.name} <span style={{fontSize: '0.8em', color: 'gray'}}>@{this.props.screen_name}</span>
-                <span style={{marginLeft: '1em', fontSize:'0.8em', color: '#999999'}}><Moment fromNow>{this.props.time}</Moment></span>
+                <a href={this.props.link}><span style={{marginLeft: '1em', fontSize:'0.8em', color: '#999999'}}><Moment fromNow>{this.props.time}</Moment></span></a>
               </Header>
             </Grid.Column>
             <Grid.Column>
@@ -129,10 +141,20 @@ class TweetCard extends Component {
               </Button>
             </Grid.Column>
           </Grid>
-          <TweetText text={this.props.text} entities={this.props.entities} />
-          <p>
-            <a href={this.props.link}>{this.props.link}</a>
-          </p>
+          <Grid>
+            <Grid.Column>
+              <TweetText text={this.props.text} entities={this.props.entities} />
+            </Grid.Column>
+          </Grid>
+          <Grid>
+            <Grid.Column>
+              <Image.Group size='medium'>
+              {this.state.images.map(
+                (image) => <Image src={image} shape="rounded" />
+              )}
+              </Image.Group>
+            </Grid.Column>
+          </Grid>
         </Card.Content>
         <Card.Content extra>
           <Grid stackable doubling>

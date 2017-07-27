@@ -33,6 +33,13 @@ class TweetText extends Component {
         tags.push(this.hashtag(this.props.text, entity));
         idx = entity.indices[1];
         break;
+      case 'url':
+        tags.push(this.url(this.props.text, entity));
+        idx = entity.indices[1];
+        break;
+      case 'user_mention':
+        tags.push(this.userMention(this.props.text, entity));
+        idx = entity.indices[1];
       default:
         break;
       }
@@ -53,6 +60,17 @@ class TweetText extends Component {
     let ht = text.substring(+entity.indices[0], +entity.indices[1]);
     let url = 'https://twitter.com/'+ht;
     return <span key={Math.random()}><a href={url}>{ht}</a> </span>
+  }
+
+  url = (text, entity) => {
+    let t = text.substring(+entity.indices[0], +entity.indices[1]);
+    return <span key={Math.random()}><a href={entity.url}>{entity.display_url}</a></span>
+  }
+
+  userMention = (text, entity) => {
+    let t = text.substring(+entity.indices[0], +entity.indices[1]);
+    let url = 'https://twitter.com/'+entity.screen_name;
+    return <span key={Math.random()}><a href={url}>@{entity.screen_name}</a></span>
   }
 
   render() {
