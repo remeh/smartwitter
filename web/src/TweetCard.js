@@ -129,14 +129,14 @@ class TweetCard extends Component {
     return <Card fluid>
         <Card.Content>
           <Grid doubling columns="equal">
-            <Grid.Column width={15}>
+            <Grid.Column width={12}>
               <Header size='tiny'> <Image src={this.props.avatar} avatar />
                 {this.props.name} <span style={{fontSize: '0.8em', color: 'gray'}}>@{this.props.screen_name}</span>
                 <a href={this.props.link}><span style={{marginLeft: '1em', fontSize:'0.8em', color: '#999999'}}><Moment fromNow>{this.props.time}</Moment></span></a>
               </Header>
             </Grid.Column>
             <Grid.Column>
-              <Button basic icon loading={this.state.ignoring} onClick={this.ignore}>
+              <Button floated='right' basic icon loading={this.state.ignoring} onClick={this.ignore}>
                 <Icon name="close" />
               </Button>
             </Grid.Column>
@@ -157,7 +157,7 @@ class TweetCard extends Component {
           </Grid>
         </Card.Content>
         <Card.Content extra>
-          <Grid stackable doubling>
+          <Grid textAlign='center' stackable doubling>
             <Grid.Column width={2}>
               <Statistic size='mini' label='Retweets' value={this.props.retweet_count} />
             </Grid.Column>
@@ -165,17 +165,13 @@ class TweetCard extends Component {
               <Statistic size='mini' label='Likes' value={this.props.like_count} />
             </Grid.Column>
             <Grid.Column width={2}>
-              <Button disabled={this.state.liked} loading={this.state.liking} onClick={this.like}>
-                Favorite
-              </Button>
+              <Button basic icon="like" disabled={this.state.liked} loading={this.state.liking} onClick={this.like} />
             </Grid.Column>
             <Grid.Column width={2}>
-              <Button disabled={this.state.retweeted} loading={this.state.retweeting} onClick={this.retweet}>
-                Retweet
-              </Button>
+              <Button basic icon="retweet" disabled={this.state.retweeted} loading={this.state.retweeting} onClick={this.retweet} />
             </Grid.Column>
             <Grid.Column width={8}>
-              <Checkbox checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
+              <Checkbox verticalAlign='middle' toggle checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
             </Grid.Column>
           </Grid>
           {this.state.likeSuccess && <Message color='green'>
