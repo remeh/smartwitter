@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
+  Button,
   Container,
   Divider,
-  Header,
-  Input,
+  Tab,
 } from 'semantic-ui-react'
 import XHR from './xhr.js';
 import TweetCard from './TweetCard.js';
@@ -16,17 +16,67 @@ class SuggestTweets extends Component {
     this.refreshTimeout = null;
 
     this.state = {
+      tabs: [],
+    }
+
+    this.fetchKeywords();
+  }
+
+  fetchKeywords() {
+    XHR.getJson(
+      XHR.domain + '/api/1.0/keywords',
+    ).then((json) => {
+      let tabs = [];
+
+      for (let i = 0; i < json.length; i++) {
+        tabs.push({
+          menuItem: json[i].label,
+          render: () => <Tweets p={i} />
+        });
+      }
+
+      tabs.push(this.addTab());
+
+      this.setState({tabs: tabs});
+    }).catch((response) => {
+      // TODO(remy): error?
+    });
+  }
+
+  addTab() {
+    return {
+      menuItem: { key: 'Add', icon: 'add', content: '' },
+      render: <div />,
+    };
+  }
+
+  render() {
+    return (
+      <Container style={{marginTop: '1em'}}>
+        <Tab panes={this.state.tabs} />
+      </Container>
+    );
+  }
+}
+
+class Tweets extends Component {
+  constructor(props) {
+    super(props);
+
+    this.refreshTimeout = null;
+
+    this.state = {
       tweets: [],
-      keywords: 'golang',
+      p: this.props.p,
       loading: false,
     }
 
     this.fetch();
   }
 
-  fetch() {
+  fetch = () => {
     var params = {
-      k: this.state.keywords,
+      p: this.state.p,
     };
     XHR.getJson(
       XHR.domain + '/api/1.0/suggest',
@@ -43,27 +93,13 @@ class SuggestTweets extends Component {
     });
   }
 
-  onChangeKeywords = (event, data) => {
-    this.setState({
-      keywords: data.value,
-      loading: true,
-    });
-    if (this.refreshTimeout) {
-      clearTimeout(this.refreshTimeout);
-      this.refreshTimeout = null;
-    }
-    this.refreshTimeout = setTimeout(() => this.fetch(), 500);
-  }
-
   render() {
     return (
-      <Container style={{marginTop: '1em'}}>
-        <Container style={{margin: '1em'}}>
-          <Header>Keywords</Header>
-          <Input loading={this.state.loading} placeholder='golang' onChange={this.onChangeKeywords} />
-        </Container>
-
-        {this.state.tweets.map(
+        <Tab.Pane>
+        <Button onClick={this.fetch} primary>Reload</Button>
+        <Divider />
+        <Container>
+          {this.state.tweets.map(
           (tweet) => <div key={tweet.uid}>
             <TweetCard
               name={tweet.name}
@@ -82,9 +118,10 @@ class SuggestTweets extends Component {
             <Divider />
           </div>
         )}
-      </Container>
+        </Container>
+      </Tab.Pane>
     );
   }
-}
+};
 
 export default SuggestTweets;

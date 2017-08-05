@@ -58,7 +58,8 @@ func declareApiRoutes(s *Server) {
 
 	// ----------------------
 
-	s.AddApi("/1.0/suggest", auth(log(suggest.ByKeywords{})), "GET")
+	s.AddApi("/1.0/suggest", auth(log(suggest.Tweets{})), "GET")
+	s.AddApi("/1.0/keywords", auth(log(suggest.Keywords{})), "GET")
 	s.AddApi("/1.0/like", auth(log(action.Like{})), "POST")
 	s.AddApi("/1.0/retweet", auth(log(action.Retweet{})), "POST")
 	s.AddApi("/1.0/ignore", auth(log(action.Ignore{})), "POST")

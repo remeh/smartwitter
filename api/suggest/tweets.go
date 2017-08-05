@@ -2,6 +2,7 @@ package suggest
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/remeh/smartwitter/account"
@@ -10,7 +11,7 @@ import (
 	"github.com/remeh/smartwitter/twitter"
 )
 
-type ByKeywords struct{}
+type Tweets struct{}
 
 type byKeywords []byKeywordsInfo
 
@@ -32,7 +33,7 @@ type byKeywordsInfo struct {
 	Entities             twitter.TweetEntities `json:"entities"`
 }
 
-func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (c Tweets) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// user
 	// ----------------------
 
@@ -51,14 +52,32 @@ func (c ByKeywords) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// ----------------------
 
 	r.ParseForm()
-	keywords := api.Escape(r.Form["k"])
+	pp := r.Form.Get("p")
+	if len(pp) == 0 {
+		api.RenderBadParameter(w, "p")
+		return
+	}
+	p, err := strconv.Atoi(pp)
+	if err != nil || p < 0 {
+		api.RenderBadParameter(w, "p")
+		return
+	}
+
+	// get the user keywords for this position
+	// ----------------------
+
+	kwords, err := suggest.GetKeywords(user.Uid)
+	if len(kwords)-1 < p {
+		api.RenderBadParameter(w, "p")
+		return
+	}
 
 	// get the suggestion
 	// ----------------------
 
 	since := time.Hour * 4
 
-	tweets, tdas, err := suggest.SuggestByKeywords(user, keywords, since, 5)
+	tweets, tdas, err := suggest.SuggestByKeywords(user, kwords[p].Keywords, since, 5)
 
 	if err != nil {
 		api.RenderErrJson(w, err)

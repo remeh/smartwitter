@@ -40,6 +40,7 @@ class TweetText extends Component {
       case 'user_mention':
         tags.push(this.userMention(this.props.text, entity));
         idx = entity.indices[1];
+        break;
       default:
         break;
       }
@@ -48,7 +49,7 @@ class TweetText extends Component {
     // end of text without entity
     // ----------------------
     let lastEnt = this.props.entities[this.props.entities.length-1];
-    if (lastEnt.indices[1] != text.length) {
+    if (lastEnt.indices[1] !== text.length) {
       let substr = text.substring(lastEnt.indices[1]);
       tags.push(<span key={Math.random()}>{substr}</span>);
     }
@@ -63,12 +64,10 @@ class TweetText extends Component {
   }
 
   url = (text, entity) => {
-    let t = text.substring(+entity.indices[0], +entity.indices[1]);
     return <span key={Math.random()}><a href={entity.url}>{entity.display_url}</a></span>
   }
 
   userMention = (text, entity) => {
-    let t = text.substring(+entity.indices[0], +entity.indices[1]);
     let url = 'https://twitter.com/'+entity.screen_name;
     return <span key={Math.random()}><a href={url}>@{entity.screen_name}</a></span>
   }

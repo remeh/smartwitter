@@ -76,6 +76,7 @@ CREATE TABLE "twitter_keywords_watcher" (
     "uid" text NOT NULL,
     "user_uid" text NOT NULL,
     "position" int NOT NULL DEFAULT 0,
+    "label" text default 'Default',
     "keywords" text[] NOT NULL DEFAULT array[]::text[],
 
     "last_run" timestamp with time zone,

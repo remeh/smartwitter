@@ -16,6 +16,7 @@ type keywords struct {
 	Uid          uuid.UUID `json:"-"`
 	UserUid      uuid.UUID `json:"-"`
 	Keywords     []string  `json:"keywords"`
+	Label        string    `json:"label"`
 	Position     int       `json:"position"`
 	CreationTime time.Time `json:"creation_time"`
 	LastUpdate   time.Time `json:"last_update"`
@@ -58,7 +59,7 @@ func GetKeywords(userUid uuid.UUID) (Keywords, error) {
 	}
 
 	rows, err := storage.DB().Query(`
-		SELECT "uid", "keywords", "position", "creation_time", "last_update"
+		SELECT "uid", "label", "keywords", "position", "creation_time", "last_update"
 		FROM
 			"twitter_keywords_watcher"
 		WHERE
@@ -75,6 +76,7 @@ func GetKeywords(userUid uuid.UUID) (Keywords, error) {
 		k := keywords{}
 		if err := rows.Scan(
 			&k.Uid,
+			&k.Label,
 			pq.Array(&k.Keywords),
 			&k.Position,
 			&k.CreationTime,

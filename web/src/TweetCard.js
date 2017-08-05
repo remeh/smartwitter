@@ -8,7 +8,6 @@ import {
   Icon,
   Image,
   Message,
-  Statistic,
 } from 'semantic-ui-react'
 import Moment from 'react-moment';
 import TweetText from './TweetText.js';
@@ -39,7 +38,7 @@ class TweetCard extends Component {
     let rv = [];
     for (let i in this.props.entities) {
       let entity = this.props.entities[i];
-      if (entity.type == 'media') {
+      if (entity.type === 'media') {
         rv.push(entity.url);
       }
     }
@@ -150,28 +149,36 @@ class TweetCard extends Component {
             <Grid.Column>
               <Image.Group size='medium'>
               {this.state.images.map(
-                (image) => <Image src={image} shape="rounded" />
+                (image) => <Image key={Math.random()} src={image} shape="rounded" />
               )}
               </Image.Group>
             </Grid.Column>
           </Grid>
         </Card.Content>
         <Card.Content extra>
-          <Grid textAlign='center' stackable doubling>
-            <Grid.Column width={2}>
-              <Statistic size='mini' label='Retweets' value={this.props.retweet_count} />
+          <Grid textAlign='center' verticalAlign='middle' doubling stackable columns="equal">
+            <Grid.Column width={4}>
+              <Button
+                content='Retweets'
+                icon='retweet'
+                label={''+this.props.retweet_count}
+                disabled={this.state.retweeted}
+                loading={this.state.retweeting}
+                onClick={this.retweet}
+              />
             </Grid.Column>
-            <Grid.Column width={2}>
-              <Statistic size='mini' label='Likes' value={this.props.like_count} />
+            <Grid.Column width={4}>
+              <Button
+                content='Likes'
+                icon='like'
+                label={''+this.props.like_count}
+                disabled={this.state.liked}
+                loading={this.state.liking}
+                onClick={this.like}
+              />
             </Grid.Column>
-            <Grid.Column width={2}>
-              <Button basic icon="like" disabled={this.state.liked} loading={this.state.liking} onClick={this.like} />
-            </Grid.Column>
-            <Grid.Column width={2}>
-              <Button basic icon="retweet" disabled={this.state.retweeted} loading={this.state.retweeting} onClick={this.retweet} />
-            </Grid.Column>
-            <Grid.Column width={8}>
-              <Checkbox verticalAlign='middle' toggle checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
+            <Grid.Column width={4}>
+              <Checkbox toggle checked={this.state.autoundo} onClick={this.toggleAutoundo} label="Auto undo in 24h" />
             </Grid.Column>
           </Grid>
           {this.state.likeSuccess && <Message color='green'>
