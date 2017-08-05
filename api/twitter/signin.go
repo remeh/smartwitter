@@ -125,8 +125,6 @@ func (c DebugSignIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	uid := account.GenTwitterUid(tu.IdStr)
 
-	println("!")
-
 	now := time.Now()
 
 	tok, secr := conf.AccessToken, conf.AccessTokenSecret
@@ -142,6 +140,7 @@ func (c DebugSignIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		TwitterId:       tu.IdStr,
 		TwitterName:     tu.Name,
 		TwitterUsername: tu.ScreenName,
+		TwitterAvatar:   tu.ProfileImageUrlHttps,
 
 		SessionToken: account.RandTok(),
 	}

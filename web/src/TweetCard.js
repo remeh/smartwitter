@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   Card,
+  Dimmer,
   Header,
   Grid,
   Icon,
@@ -23,13 +24,15 @@ class TweetCard extends Component {
       liked: this.props.liked,
       likeError: '',
       likeSuccess: '',
+      like_count: this.props.like_count,
+      retweet_count: this.props.retweet_count,
       retweeting: false,
       retweeted: this.props.retweeted,
       retweetError: '',
       retweetSuccess: '',
+      ignored: false,
       ignoring: false,
       ignoreError: '',
-      ignoreSuccess: '',
       images: this.imagesInTweet(),
     }
   }
@@ -56,6 +59,7 @@ class TweetCard extends Component {
     ).then((json) => {
         this.setState({
           liking: false,
+          like_count: this.state.like_count+1,
           liked: true,
           likeSuccess: 'Successfully liked',
           likeError: '',
@@ -81,6 +85,7 @@ class TweetCard extends Component {
     ).then((json) => {
         this.setState({
           retweeting: false,
+          retweet_count: this.state.retweet_count+1,
           retweeted: true,
           retweetSuccess: 'Successfully retweeted',
           retweetError: '',
@@ -105,15 +110,14 @@ class TweetCard extends Component {
       params,
     ).then((json) => {
         this.setState({
+          ignored: true,
           ignoring: false,
-          ignoreSuccess: 'Successfully ignored',
           ignoreError: '',
         });
     }).catch((response) => {
         this.setState({
           ignoring: false,
-          ignoreSuccess: '',
-          ignoreError: 'Either you\'ve already ignored this tweet, either it\'s not available anymore.',
+          ignoreError: 'Either you\'ve already hidden this tweet, either it\'s not available anymore.',
         });
     });
   }
@@ -125,7 +129,12 @@ class TweetCard extends Component {
   }
 
   render() {
-    return <Card fluid>
+    return (
+      <Dimmer.Dimmable blurring dimmed={this.state.ignored}>
+      <Dimmer active={this.state.ignored} inverted>
+        <Button onClick={this.props.reload}>This tweet has been hidden. Click here to reload other tweets.</Button>
+      </Dimmer>
+      <Card fluid>
         <Card.Content>
           <Grid doubling columns="equal">
             <Grid.Column width={12}>
@@ -159,9 +168,9 @@ class TweetCard extends Component {
           <Grid textAlign='center' verticalAlign='middle' doubling stackable columns="equal">
             <Grid.Column width={4}>
               <Button
-                content='Retweets'
+                content='Retweet'
                 icon='retweet'
-                label={''+this.props.retweet_count}
+                label={''+this.state.retweet_count}
                 disabled={this.state.retweeted}
                 loading={this.state.retweeting}
                 onClick={this.retweet}
@@ -169,9 +178,9 @@ class TweetCard extends Component {
             </Grid.Column>
             <Grid.Column width={4}>
               <Button
-                content='Likes'
+                content='Like'
                 icon='like'
-                label={''+this.props.like_count}
+                label={''+this.state.like_count}
                 disabled={this.state.liked}
                 loading={this.state.liking}
                 onClick={this.like}
@@ -197,16 +206,14 @@ class TweetCard extends Component {
               {this.state.retweetError}
             </Message>
           }
-          {this.state.ignoreSuccess && <Message color='green'>
-              {this.state.ignoreSuccess}
-            </Message>
-          }
           {this.state.ignoreError && <Message color='red'>
               {this.state.ignoreError}
             </Message>
           }
         </Card.Content>
       </Card>
+      </Dimmer.Dimmable>
+    )
   }
 }
 

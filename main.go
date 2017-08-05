@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/remeh/smartwitter/agent"
+	"github.com/remeh/smartwitter/api/account"
 	"github.com/remeh/smartwitter/api/action"
 	"github.com/remeh/smartwitter/api/adapter"
 	"github.com/remeh/smartwitter/api/example"
@@ -63,6 +64,10 @@ func declareApiRoutes(s *Server) {
 	s.AddApi("/1.0/like", auth(log(action.Like{})), "POST")
 	s.AddApi("/1.0/retweet", auth(log(action.Retweet{})), "POST")
 	s.AddApi("/1.0/ignore", auth(log(action.Ignore{})), "POST")
+
+	// ----------------------
+
+	s.AddApi("/1.0/session", auth(log(account.Session{})), "GET")
 
 	// twitter sign in
 	// ----------------------

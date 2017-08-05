@@ -50,8 +50,9 @@ func (d *userDAO) UpsertOnLogin(u *User) error {
 			"twitter_id" = $6,
 			"twitter_name" = $7,
 			"twitter_username" = $8,
-			"session_token" = $9
-	`, u.Uid, u.CreationTime, u.LastLogin, u.TwitterToken, u.TwitterSecret, u.TwitterId, u.TwitterName, u.TwitterUsername, u.SessionToken); err != nil {
+			"twitter_avatar" = $9,
+			"session_token" = $10
+	`, u.Uid, u.CreationTime, u.LastLogin, u.TwitterToken, u.TwitterSecret, u.TwitterId, u.TwitterName, u.TwitterUsername, u.TwitterAvatar, u.SessionToken); err != nil {
 		return err
 	}
 	return nil
@@ -61,7 +62,7 @@ func (d *userDAO) Find(id uuid.UUID) (*User, error) {
 	rv := &User{}
 
 	if err := d.DB.QueryRow(`
-		SELECT "uid", "creation_time", "last_login", "twitter_token", "twitter_secret", "twitter_id", "twitter_name", "twitter_username", "session_token" FROM "user"
+		SELECT "uid", "creation_time", "last_login", "twitter_token", "twitter_secret", "twitter_id", "twitter_name", "twitter_username", "twitter_avatar", "session_token" FROM "user"
 		WHERE
 			"uid" = $1
 		LIMIT 1
@@ -74,6 +75,7 @@ func (d *userDAO) Find(id uuid.UUID) (*User, error) {
 		&rv.TwitterId,
 		&rv.TwitterName,
 		&rv.TwitterUsername,
+		&rv.TwitterAvatar,
 		&rv.SessionToken); err != nil {
 		return nil, err
 	}
@@ -85,7 +87,7 @@ func (d *userDAO) FindBySession(sessionToken string) (*User, error) {
 	rv := &User{}
 
 	if err := d.DB.QueryRow(`
-		SELECT "uid", "creation_time", "last_login", "twitter_token", "twitter_secret", "twitter_id", "twitter_name", "twitter_username" FROM "user"
+		SELECT "uid", "creation_time", "last_login", "twitter_token", "twitter_secret", "twitter_id", "twitter_name", "twitter_username", "twitter_avatar" FROM "user"
 		WHERE
 			session_token = $1
 		LIMIT 1
@@ -97,7 +99,8 @@ func (d *userDAO) FindBySession(sessionToken string) (*User, error) {
 		&rv.TwitterSecret,
 		&rv.TwitterId,
 		&rv.TwitterName,
-		&rv.TwitterUsername); err != nil {
+		&rv.TwitterUsername,
+		&rv.TwitterAvatar); err != nil {
 		return nil, err
 	}
 

@@ -14,18 +14,19 @@ var (
 )
 
 type User struct {
-	Uid uuid.UUID `json:"uid"`
+	Uid uuid.UUID `json:"-"`
 
-	TwitterToken    string
-	TwitterSecret   string
-	TwitterId       string
-	TwitterUsername string
-	TwitterName     string
+	TwitterToken    string `json:"-"`
+	TwitterSecret   string `json:"-"`
+	TwitterId       string `json:"-"`
+	TwitterUsername string `json:"twitter_username"`
+	TwitterName     string `json:"twitter_name"`
+	TwitterAvatar   string `json:"twitter_avatar"`
 
-	SessionToken string
+	SessionToken string `json:"-"`
 
-	CreationTime time.Time
-	LastLogin    time.Time
+	CreationTime time.Time `json:"-"`
+	LastLogin    time.Time `json:"-"`
 }
 
 // Crypt crypts the given password using bcrypt.

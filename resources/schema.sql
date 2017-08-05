@@ -17,6 +17,7 @@ CREATE TABLE "user" (
     "twitter_id" text DEFAULT NULL,
     "twitter_username" text DEFAULT NULL,
     "twitter_name" text DEFAULT NULL,
+    "twitter_avatar" text DEFAULT 'https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png',
 
     "session_token" text DEFAULT NULL,
 

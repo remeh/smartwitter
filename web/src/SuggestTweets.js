@@ -69,7 +69,22 @@ class Tweets extends Component {
       tweets: [],
       p: this.props.p,
       loading: false,
+      reloadDisabled: true,
     }
+
+    setTimeout(() => {
+      this.setState({
+        reloadDisabled: false,
+      });
+    }, 5000);
+
+    this.fetch();
+  }
+
+  reload = () => {
+    this.setState({
+      reloadDisabled: true,
+    });
 
     this.fetch();
   }
@@ -78,6 +93,13 @@ class Tweets extends Component {
     var params = {
       p: this.state.p,
     };
+
+    setTimeout(() => {
+      this.setState({
+        reloadDisabled: false,
+      });
+    }, 5000);
+
     XHR.getJson(
       XHR.domain + '/api/1.0/suggest',
       params,
@@ -88,6 +110,7 @@ class Tweets extends Component {
       });
     }).catch((response) => {
       this.setState({
+        reloadDisabled: false,
         loading: false,
       });
     });
@@ -96,12 +119,14 @@ class Tweets extends Component {
   render() {
     return (
         <Tab.Pane>
-        <Button onClick={this.fetch} primary>Reload</Button>
+        <Button disabled={this.state.reloadDisabled} onClick={this.reload} icon='refresh' primary content='Reload' />
+        <Button icon='edit' content='Configure keywords' />
         <Divider />
         <Container>
           {this.state.tweets.map(
           (tweet) => <div key={tweet.uid}>
             <TweetCard
+              reload={this.fetch}
               name={tweet.name}
               screen_name={tweet.screen_name}
               avatar={tweet.avatar}
